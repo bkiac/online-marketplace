@@ -1,2 +1,8 @@
-build
-installed_contracts
+*.idea
+*.vscode
+
+backend/build
+backend/installed_contracts
+
+frontend/node_modules
+frontend/build_webpack
