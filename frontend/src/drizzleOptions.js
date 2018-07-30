@@ -1,5 +1,3 @@
-import MarketHelper from '../../backend/build/contracts/MarketHelper.json';
-import EscrowFactory from '../../backend/build/contracts/EscrowFactory.json';
 import Market from '../../backend/build/contracts/Market.json';
 
 const drizzleOptions = {
@@ -11,12 +9,9 @@ const drizzleOptions = {
     },
   },
   contracts: [
-    MarketHelper,
-    EscrowFactory,
     Market,
   ],
   events: {
-    SimpleStorage: ['StorageSet'],
   },
   polls: {
     accounts: 1500,

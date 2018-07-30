@@ -6,6 +6,7 @@ import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { DrizzleProvider } from 'drizzle-react';
 import { LoadingContainer } from 'drizzle-react-components';
+import 'bootstrap/dist/css/bootstrap.css';
 
 // Layouts
 import App from './App';
