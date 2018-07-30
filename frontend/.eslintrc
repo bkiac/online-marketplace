@@ -2,16 +2,9 @@
   "extends": "airbnb",
   "rules": {
     "func-names": [ "error", "never" ],
-    "react/prop-types": 1,
-    "react/no-unescaped-entities": 0,
-    "react/jsx-one-expression-per-line": 0,
-    "object-curly-newline": [
-      "error", {
-        "ObjectExpression": "always",
-        "ObjectPattern": { "multiline": true },
-        "ImportDeclaration": { "multiline": true },
-        "ExportDeclaration": { "multiline": true }
-      }
-    ]
+    "react/prop-types": "warn",
+    "react/no-unescaped-entities": "off",
+    "react/jsx-one-expression-per-line": "off",
+    "object-curly-newline": "off"
   }
 }
