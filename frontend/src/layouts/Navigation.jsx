@@ -37,10 +37,10 @@ export default class Navigation extends Component {
           <Collapse isOpen={isOpen} navbar>
             <Nav className="ml-auto" navbar>
               <NavItem>
-                <NavLink href="/">Buy</NavLink>
+                <NavLink href="/buy">Buy</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink href="/">Sell</NavLink>
+                <NavLink href="/sell">Sell</NavLink>
               </NavItem>
               {/* <UncontrolledDropdown nav inNavbar>
                 <DropdownToggle nav caret>
