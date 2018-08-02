@@ -17,30 +17,17 @@ class Sell extends Component {
       price: 0,
       guaranteedShippingTime: 0,
     };
-
-    console.log(this.state);
-    console.log(this.props);
-    console.log(context);
   }
 
   handleInputChange(e) {
     this.setState({
       [e.target.name]: e.target.value,
     });
-
-    console.log(this.state);
   }
 
   handleSubmit() {
     const { name, price, guaranteedShippingTime } = this.state;
     const { Market } = this.contracts;
-
-    console.log('Creating product:');
-    console.log({
-      name,
-      price,
-      guaranteedShippingTime,
-    });
 
     Market.methods.createListing(
       name,
