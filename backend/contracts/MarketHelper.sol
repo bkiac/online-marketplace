@@ -67,6 +67,10 @@ contract MarketHelper is Ownable {
   }
 
 
+  function getNumOfProducts() external view returns (uint) {
+    return products.length;
+  }
+
   function getProductsByVendor(address vendor) external view returns (uint[]) {
     uint[] memory productIds = new uint[](vendorProductCount[vendor]);
     uint counter = 0;
@@ -94,7 +98,6 @@ contract MarketHelper is Ownable {
 
     return productIds;
   }
-
 
   function createListing(string name, uint price, uint guaranteedShippingTime) public {
     require(bytes(name).length < 80);

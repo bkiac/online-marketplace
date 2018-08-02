@@ -2,10 +2,11 @@
   "extends": "airbnb",
   "rules": {
     "func-names": [ "error", "never" ],
+    "object-curly-newline": "off",
     "react/prop-types": "warn",
     "react/forbid-prop-types": "warn",
     "react/no-unescaped-entities": "off",
     "react/jsx-one-expression-per-line": "off",
-    "object-curly-newline": "off"
+    "react/no-did-mount-set-state": "off"
   }
 }
