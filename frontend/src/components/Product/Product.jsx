@@ -14,7 +14,7 @@ const Product = (props) => {
         <CardText>
           The shipment will arrive in maximum {guaranteedShippingTime} days after purchase.
         </CardText>
-        <Button>Button</Button>
+        <Button>Purchase</Button>
       </CardBody>
     </Card>
   );

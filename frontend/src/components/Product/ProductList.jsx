@@ -1,4 +1,5 @@
 import React from 'react';
+import { CardColumns } from 'reactstrap';
 
 import Product from './Product';
 
@@ -6,14 +7,18 @@ const ProductList = (props) => {
   const { productList } = props;
 
   return (
-    productList.map(product => (
-      <Product
-        key={product.id}
-        name={product.name}
-        price={product.price}
-        guaranteedShippingTime={product.guaranteedShippingTime}
-      />
-    ))
+    <CardColumns>
+      {
+        productList.map(product => (
+          <Product
+            key={product.id}
+            name={product.name}
+            price={product.price}
+            guaranteedShippingTime={product.guaranteedShippingTime}
+          />
+        ))
+      }
+    </CardColumns>
   );
 };
 
