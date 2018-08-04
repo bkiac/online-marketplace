@@ -10,12 +10,12 @@ import {
 } from 'reactstrap';
 
 const Navigation = (props) => {
-  const { isOpen, toggle } = props;
+  const { isOpen, toggle, account } = props;
 
   return (
     <div>
       <Navbar color="light" light expand="md">
-        <NavbarBrand href="/">Market</NavbarBrand>
+        <NavbarBrand>Current account: {account}</NavbarBrand>
         <NavbarToggler onClick={toggle} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="ml-auto" navbar>
