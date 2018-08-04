@@ -4,12 +4,12 @@ import { Button, Card, CardBody, CardSubtitle, CardText, CardTitle } from 'react
 import { weiToEther } from '../../helpers';
 
 const Product = (props) => {
-  const { name, price, guaranteedShippingTime } = props;
+  const { id, name, price, guaranteedShippingTime } = props;
 
   return (
     <Card>
       <CardBody>
-        <CardTitle>{name}</CardTitle>
+        <CardTitle>[{id}] {name}</CardTitle>
         <CardSubtitle>Price: {weiToEther(price)} ether</CardSubtitle>
         <CardText>
           The shipment will arrive in maximum {guaranteedShippingTime} days after purchase.

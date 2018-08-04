@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { drizzleConnect } from 'drizzle-react';
-import uuidv1 from 'uuid/v1';
 import PropTypes from 'prop-types';
 
 import Buy from './Buy';
@@ -19,12 +18,8 @@ class BuyContainer extends Component {
   async componentDidMount() {
     const productList = await this.getProductList();
 
-    const productListWithIds = productList.map(product => (
-      { id: uuidv1(), ...product }
-    ));
-
     this.setState({
-      productList: productListWithIds,
+      productList,
     });
   }
 

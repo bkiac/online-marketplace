@@ -14,6 +14,7 @@ contract MarketHelper is Ownable {
 
 
   struct Product {
+    uint id;
     string name;
     uint price;
     uint guaranteedShippingTime;
@@ -102,7 +103,9 @@ contract MarketHelper is Ownable {
   function createListing(string name, uint price, uint guaranteedShippingTime) public {
     require(bytes(name).length < 80);
 
-    uint id = products.push(Product(
+    uint id = products.length;
+    products.push(Product(
+      id,
       name, 
       price, 
       guaranteedShippingTime, 

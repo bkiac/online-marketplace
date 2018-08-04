@@ -12,6 +12,7 @@ const ProductList = (props) => {
         productList.map(product => (
           <Product
             key={product.id}
+            id={product.id}
             name={product.name}
             price={product.price}
             guaranteedShippingTime={product.guaranteedShippingTime}
