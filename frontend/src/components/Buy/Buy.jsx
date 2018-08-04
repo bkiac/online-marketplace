@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { CardColumns } from 'reactstrap';
 import uuidv1 from 'uuid/v1';
 
-import ProductList from '../product/ProductList';
+import { ProductList } from '../Product';
 
 class Buy extends Component {
   constructor(props, context) {

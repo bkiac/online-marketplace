@@ -13,9 +13,9 @@ import drizzleOptions from './drizzleOptions';
 
 // Layouts
 import App from './App';
-import Navigation from './layouts/Navigation';
-import SellContainer from './layouts/sell/SellContainer';
-import BuyContainer from './layouts/buy/BuyContainer';
+import { BuyContainer } from './components/Buy';
+import { SellContainer } from './components/Sell';
+import { NavigationContainer } from './components/Navigation';
 
 // Initialize react-router-redux.
 const history = syncHistoryWithStore(browserHistory, store);
@@ -25,7 +25,7 @@ ReactDOM.render(
     <DrizzleProvider options={drizzleOptions} store={store}>
       <LoadingContainer>
         <div>
-          <Navigation/>
+          <NavigationContainer/>
           <Router history={history}>
             <Route path="/" component={App}>
               <IndexRoute component={BuyContainer}/>
