@@ -15,6 +15,8 @@ contract MarketHelper is Ownable {
 
   struct Product {
     uint id;
+    address vendor;
+    address customer;
     string name;
     uint price;
     uint guaranteedShippingTime;
@@ -26,19 +28,17 @@ contract MarketHelper is Ownable {
   
 
   Product[] public products;
-  mapping(uint => address) public productToVendor;
   mapping(address => uint) public vendorProductCount;
-  mapping(uint => address) public productToCustomer;
   mapping(address => uint) public customerProductCount;
 
 
   modifier onlyVendor(uint id) {
-    require(productToVendor[id] == msg.sender);
+    require(msg.sender == products[id].vendor);
     _;
   }
 
   modifier onlyCustomer(uint id) {
-    require(productToCustomer[id] == msg.sender);
+    require(msg.sender == products[id].customer);
     _;
   }
 
@@ -77,7 +77,7 @@ contract MarketHelper is Ownable {
     uint counter = 0;
 
     for (uint i = 0; i < products.length; i++) {
-      if (productToVendor[i] == vendor) {
+      if (products[i].vendor == vendor) {
         productIds[counter] = i;
         counter++;
       }
@@ -91,7 +91,7 @@ contract MarketHelper is Ownable {
     uint counter = 0;
 
     for (uint i = 0; i < products.length; i++) {
-      if (productToCustomer[i] == customer) {
+      if (products[i].customer == customer) {
         productIds[counter] = i;
         counter++;
       }
@@ -106,12 +106,13 @@ contract MarketHelper is Ownable {
     uint id = products.length;
     products.push(Product(
       id,
-      name, 
-      price, 
+      msg.sender,
+      0,
+      name,
+      price,
       guaranteedShippingTime, 
       State.New
     ));
-    productToVendor[id] = msg.sender;
     vendorProductCount[msg.sender]++;
 
     emit LogProductListed(id, msg.sender);

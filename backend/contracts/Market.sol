@@ -11,20 +11,20 @@ contract Market is EscrowFactory {
 
 
   function purchaseProduct(uint id) public payable onlyNewProduct(id) {
-    require(products[id].price <= msg.value);
-    require(productToVendor[id] != msg.sender);
+    require(msg.value >= products[id].price);
+    require(msg.sender != products[id].vendor);
 
     Product storage purchasedProduct = products[id];
     purchasedProduct.state = State.Purchased;
 
-    productToCustomer[id] = msg.sender;
+    purchasedProduct.customer = msg.sender;
     customerProductCount[msg.sender]++;
 
     createEscrowForProduct(id, purchasedProduct.price);
 
     msg.sender.transfer(msg.value - purchasedProduct.price);
 
-    emit LogProductPurchased(id, productToVendor[id], msg.sender);
+    emit LogProductPurchased(id, purchasedProduct.vendor, msg.sender);
   }
 
   function shipProduct(uint id) public onlyVendor(id) onlyPurchasedProduct(id) {
@@ -33,7 +33,7 @@ contract Market is EscrowFactory {
 
     setProductEscrowExpirationDate(id, shippedProduct.guaranteedShippingTime);
 
-    emit LogProductShipped(id, msg.sender, productToCustomer[id]);
+    emit LogProductShipped(id, msg.sender, shippedProduct.customer);
   }
 
   function flagProduct(uint id) public onlyShippedProduct(id) {
