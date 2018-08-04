@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input, Container, Row, Col } from 'reactstrap';
 import PropTypes from 'prop-types';
 
-import { etherToWei } from '../../helpers';
+import { etherToWei } from '../../util/helpers';
 
 class Sell extends Component {
   constructor(props, context) {
@@ -52,6 +52,7 @@ class Sell extends Component {
                   type="text"
                   name="name"
                   id="name"
+                  maxLength="60"
                   placeholder="Name of the product"
                   onChange={this.handleInputChange}
                 />
