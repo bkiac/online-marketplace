@@ -3,6 +3,7 @@ import { drizzleConnect } from 'drizzle-react';
 import PropTypes from 'prop-types';
 
 import Buy from './Buy';
+import { filterProductsByState } from '../../util/helpers';
 
 class BuyContainer extends Component {
   constructor(props, context) {
@@ -10,20 +11,23 @@ class BuyContainer extends Component {
 
     this.contracts = context.drizzle.contracts;
 
+    const { accounts } = props;
+
     this.state = {
+      account: accounts[0],
       productList: [],
     };
   }
 
   async componentDidMount() {
-    const productList = await this.getProductList();
+    const productList = filterProductsByState(await this.getFullProductList(), 'New');
 
     this.setState({
       productList,
     });
   }
 
-  async getProductList() {
+  async getFullProductList() {
     const { Market } = this.contracts;
     const productList = [];
 
@@ -37,10 +41,11 @@ class BuyContainer extends Component {
   }
 
   render() {
-    const { productList } = this.state;
+    const { account, productList } = this.state;
 
     return (
       <Buy
+        account={account}
         productList={productList}
       />
     );

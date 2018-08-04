@@ -5,21 +5,49 @@ import PropTypes from 'prop-types';
 import Product from './Product';
 
 class ProductContainer extends Component {
-  static handlePurchase(id) {
-    console.log(id);
-  }
-
   constructor(props, context) {
     super(props);
 
+    const { account, id, vendor, name, price, guaranteedShippingTime } = props;
+
     this.contracts = context.drizzle.contracts;
 
-    // this.handlePurchase = this.handlePurchase.bind(this);
+    this.handlePurchase = this.handlePurchase.bind(this);
+
+    this.state = {
+      account,
+      id,
+      vendor,
+      name,
+      price,
+      guaranteedShippingTime,
+    };
+  }
+
+  handlePurchase() {
+    const { id, price } = this.state;
+
+    const { Market } = this.contracts;
+
+    Market.methods.purchaseProduct(id).send({ value: price });
   }
 
   render() {
+    const { account, id, vendor, name, price, guaranteedShippingTime } = this.state;
+
+    const isPurchaseDisabled = account === vendor;
+
     return (
-      <Product />
+      <Product
+        key={id}
+        id={id}
+        vendor={vendor}
+        name={name}
+        price={price}
+        guaranteedShippingTime={guaranteedShippingTime}
+        isPurchaseDisabled={isPurchaseDisabled}
+        handlePurchase={this.handlePurchase}
+      />
     );
   }
 }

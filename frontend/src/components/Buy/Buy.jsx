@@ -3,10 +3,11 @@ import React from 'react';
 import { ProductList } from '../Product';
 
 const Buy = (props) => {
-  const { productList } = props;
+  const { account, productList } = props;
 
   return (
     <ProductList
+      account={account}
       productList={productList}
     />
   );
