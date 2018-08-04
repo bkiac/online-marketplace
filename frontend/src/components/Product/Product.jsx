@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Card, CardBody, CardSubtitle, CardText, CardTitle } from 'reactstrap';
-import Web3 from 'web3';
+
+import { weiToEther } from '../../helpers';
 
 const Product = (props) => {
   const { name, price, guaranteedShippingTime } = props;
@@ -9,7 +10,7 @@ const Product = (props) => {
     <Card>
       <CardBody>
         <CardTitle>{name}</CardTitle>
-        <CardSubtitle>Price: {Web3.utils.fromWei(price, 'ether')} ether</CardSubtitle>
+        <CardSubtitle>Price: {weiToEther(price)} ether</CardSubtitle>
         <CardText>
           The shipment will arrive in maximum {guaranteedShippingTime} days after purchase.
         </CardText>

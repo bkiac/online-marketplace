@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input, Container, Row, Col } from 'reactstrap';
 import PropTypes from 'prop-types';
-import Web3 from 'web3';
+
+import { etherToWei } from '../../helpers';
 
 class Sell extends Component {
   constructor(props, context) {
@@ -31,7 +32,7 @@ class Sell extends Component {
 
     Market.methods.createListing(
       name,
-      Web3.utils.toWei(price.toString(), 'ether'),
+      etherToWei(price),
       guaranteedShippingTime,
     ).send();
   }
