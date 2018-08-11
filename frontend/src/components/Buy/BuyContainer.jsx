@@ -13,8 +13,6 @@ class BuyContainer extends Component {
   constructor(props, context) {
     super(props);
 
-    BuyContainer.sanitizeProducts = BuyContainer.sanitizeProducts.bind(this);
-
     const { drizzle: { contracts: { Market } } } = context;
     this.MarketContract = Market;
 
@@ -44,7 +42,7 @@ class BuyContainer extends Component {
   }
 
   render() {
-    const { account, Market: MarketState } = this.props;
+    const { Market: MarketState } = this.props;
 
     if (!(this.dataKeys.numOfProducts in MarketState.numOfProducts)
       && !(this.dataKeys.products === [])) {
@@ -57,7 +55,6 @@ class BuyContainer extends Component {
 
     return (
       <Buy
-        account={account}
         products={products}
       />
     );
@@ -66,7 +63,6 @@ class BuyContainer extends Component {
 
 const mapStateToProps = state => ({
   drizzleStatus: state.drizzleStatus,
-  account: state.accounts[0],
   Market: state.contracts.Market,
 });
 

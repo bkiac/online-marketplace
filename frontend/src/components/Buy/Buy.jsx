@@ -2,11 +2,10 @@ import React from 'react';
 
 import { ProductList } from '../Product';
 
-const Buy = ({ account, products }) => {
+const Buy = ({ products }) => {
   if (products) {
     return (
       <ProductList
-        account={account}
         products={products}
       />
     );
