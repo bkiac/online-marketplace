@@ -10,14 +10,14 @@ class Sell extends Component {
 
     this.contracts = context.drizzle.contracts;
 
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-
     this.state = {
       name: '',
       price: 0,
       guaranteedShippingTime: 0,
     };
+
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleInputChange(e) {

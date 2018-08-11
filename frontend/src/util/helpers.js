@@ -30,5 +30,5 @@ export function filterProductsByCustomer(products, customerAddress) {
 }
 
 export function values(obj) {
-  return Object.keys(obj).map(k => (obj[k].value));
+  return Object.keys(obj).map(key => (obj[key].value));
 }
