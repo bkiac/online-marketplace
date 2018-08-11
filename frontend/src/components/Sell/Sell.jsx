@@ -74,6 +74,7 @@ class Sell extends Component {
                   name="guaranteedShippingTime"
                   id="guaranteedShippingTime"
                   placeholder="Guaranteed shipping time"
+                  max="256"
                   onChange={this.handleInputChange}
                 />
               </FormGroup>
