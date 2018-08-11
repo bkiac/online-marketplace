@@ -8,44 +8,30 @@ class ProductContainer extends Component {
   constructor(props, context) {
     super(props);
 
-    const { account, id, vendor, name, price, guaranteedShippingTime } = props;
+    const { drizzle: { contracts: { Market } } } = context;
 
-    this.contracts = context.drizzle.contracts;
+    this.MarketContract = Market;
 
     this.handlePurchase = this.handlePurchase.bind(this);
-
-    this.state = {
-      account,
-      id,
-      vendor,
-      name,
-      price,
-      guaranteedShippingTime,
-    };
   }
 
   handlePurchase() {
-    const { id, price } = this.state;
+    const { account, product } = this.props;
 
-    const { Market } = this.contracts;
-
-    Market.methods.purchaseProduct(id).send({ value: price });
+    if (account !== product.vendor) {
+      this.MarketContract.methods.purchaseProduct(product.id).send({ value: product.price });
+    }
   }
 
   render() {
-    const { account, id, vendor, name, price, guaranteedShippingTime } = this.state;
+    const { account, product } = this.props;
 
-    const isPurchaseDisabled = account === vendor;
+    const isPurchasable = account !== product.vendor;
 
     return (
       <Product
-        key={id}
-        id={id}
-        vendor={vendor}
-        name={name}
-        price={price}
-        guaranteedShippingTime={guaranteedShippingTime}
-        isPurchaseDisabled={isPurchaseDisabled}
+        product={product}
+        isPurchasable={isPurchasable}
         handlePurchase={this.handlePurchase}
       />
     );
@@ -53,8 +39,8 @@ class ProductContainer extends Component {
 }
 
 const mapStateToProps = state => ({
-  accounts: state.accounts,
   drizzleStatus: state.drizzleStatus,
+  account: state.accounts[0],
 });
 
 ProductContainer.contextTypes = {
