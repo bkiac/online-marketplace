@@ -10,9 +10,7 @@ import rootSaga from './rootSaga';
 import drizzleOptions from './drizzleOptions';
 
 // Redux DevTools
-
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; // eslint-disable-line
-
 
 const routingMiddleware = routerMiddleware(browserHistory);
 const sagaMiddleware = createSagaMiddleware();
