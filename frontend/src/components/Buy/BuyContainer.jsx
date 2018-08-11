@@ -3,58 +3,71 @@ import { drizzleConnect } from 'drizzle-react';
 import PropTypes from 'prop-types';
 
 import Buy from './Buy';
-import { filterProductsByState } from '../../util/helpers';
+import { filterProductsByState, values } from '../../util/helpers';
 
 class BuyContainer extends Component {
+  static sanitizeProducts(products) {
+    return filterProductsByState(values(products), 'New');
+  }
+
   constructor(props, context) {
     super(props);
 
-    this.contracts = context.drizzle.contracts;
+    BuyContainer.sanitizeProducts = BuyContainer.sanitizeProducts.bind(this);
 
-    const { accounts } = props;
+    const { drizzle: { contracts: { Market } } } = context;
+    this.MarketContract = Market;
 
-    this.state = {
-      account: accounts[0],
-      productList: [],
+    const keyToNumOfProducts = Market.methods.numOfProducts.cacheCall();
+    this.dataKeys = {
+      numOfProducts: keyToNumOfProducts,
+      products: [],
     };
   }
 
-  async componentDidMount() {
-    const productList = filterProductsByState(await this.getFullProductList(), 'New');
+  componentDidUpdate() {
+    const { Market: MarketState } = this.props;
 
-    this.setState({
-      productList,
-    });
-  }
+    const numOfProducts = Number.parseInt(
+      MarketState.numOfProducts[this.dataKeys.numOfProducts].value,
+    );
 
-  async getFullProductList() {
-    const { Market } = this.contracts;
-    const productList = [];
-
-    const numOfProducts = await Market.methods.getNumOfProducts().call();
-
+    const keysToProducts = [];
     for (let i = 0; i < numOfProducts; i += 1) {
-      productList.push(Market.methods.products(i).call());
+      keysToProducts.push(this.MarketContract.methods.products.cacheCall(i));
     }
 
-    return Promise.all(productList);
+    this.dataKeys = {
+      ...this.dataKeys,
+      products: keysToProducts,
+    };
   }
 
   render() {
-    const { account, productList } = this.state;
+    const { account, Market: MarketState } = this.props;
+
+    if (!(this.dataKeys.numOfProducts in MarketState.numOfProducts)
+      && !(this.dataKeys.products === [])) {
+      return (
+        <Buy />
+      );
+    }
+
+    const products = BuyContainer.sanitizeProducts(MarketState.products);
 
     return (
       <Buy
         account={account}
-        productList={productList}
+        products={products}
       />
     );
   }
 }
 
 const mapStateToProps = state => ({
-  accounts: state.accounts,
   drizzleStatus: state.drizzleStatus,
+  account: state.accounts[0],
+  Market: state.contracts.Market,
 });
 
 BuyContainer.contextTypes = {

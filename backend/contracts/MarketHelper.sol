@@ -14,22 +14,21 @@ contract MarketHelper is Ownable {
 
 
   struct Product {
-    uint id;
-    address vendor;
-    address customer;
     string name;
     uint price;
-    uint guaranteedShippingTime;
+    address vendor;
+    address customer;
+    uint64 id;
+    uint8 guaranteedShippingTime;
     State state;
   }
 
 
   event LogProductListed(uint productId, address indexed vendor);
-  
 
-  Product[] public products;
-  mapping(address => uint) public vendorProductCount;
-  mapping(address => uint) public customerProductCount;
+
+  uint public numOfProducts = 0;
+  mapping(uint => Product) public products;
 
 
   modifier onlyVendor(uint id) {
@@ -67,53 +66,22 @@ contract MarketHelper is Ownable {
     _;
   }
 
-
-  function getNumOfProducts() external view returns (uint) {
-    return products.length;
-  }
-
-  function getProductsByVendor(address vendor) external view returns (uint[]) {
-    uint[] memory productIds = new uint[](vendorProductCount[vendor]);
-    uint counter = 0;
-
-    for (uint i = 0; i < products.length; i++) {
-      if (products[i].vendor == vendor) {
-        productIds[counter] = i;
-        counter++;
-      }
-    }
-
-    return productIds;
-  }
-
-  function getProductsByCustomer(address customer) external view returns (uint[]) {
-    uint[] memory productIds = new uint[](vendorProductCount[customer]);
-    uint counter = 0;
-
-    for (uint i = 0; i < products.length; i++) {
-      if (products[i].customer == customer) {
-        productIds[counter] = i;
-        counter++;
-      }
-    }
-
-    return productIds;
-  }
-
-  function createListing(string name, uint price, uint guaranteedShippingTime) public {
+  function createListing(string name, uint256 price, uint8 guaranteedShippingTime) public {
     require(bytes(name).length < 80);
 
-    uint id = products.length;
-    products.push(Product(
-      id,
-      msg.sender,
-      0,
+    uint64 id = uint64(numOfProducts);
+
+    products[id] = Product(
       name,
       price,
-      guaranteedShippingTime, 
+      msg.sender,
+      0,
+      id,
+      guaranteedShippingTime,
       State.New
-    ));
-    vendorProductCount[msg.sender]++;
+    );
+    
+    numOfProducts++;
 
     emit LogProductListed(id, msg.sender);
   }

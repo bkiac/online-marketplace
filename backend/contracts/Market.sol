@@ -18,7 +18,6 @@ contract Market is EscrowFactory {
     purchasedProduct.state = State.Purchased;
 
     purchasedProduct.customer = msg.sender;
-    customerProductCount[msg.sender]++;
 
     createEscrowForProduct(id, purchasedProduct.price);
 

@@ -2,14 +2,18 @@ import React from 'react';
 
 import { ProductList } from '../Product';
 
-const Buy = (props) => {
-  const { account, productList } = props;
+const Buy = ({ account, products }) => {
+  if (products) {
+    return (
+      <ProductList
+        account={account}
+        products={products}
+      />
+    );
+  }
 
   return (
-    <ProductList
-      account={account}
-      productList={productList}
-    />
+    <p>Loading products...</p>
   );
 };
 

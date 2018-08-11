@@ -3,6 +3,7 @@
   "rules": {
     "func-names": [ "error", "never" ],
     "object-curly-newline": "off",
+    "radix": "off",
     "react/prop-types": "warn",
     "react/forbid-prop-types": "warn",
     "react/no-unescaped-entities": "off",
