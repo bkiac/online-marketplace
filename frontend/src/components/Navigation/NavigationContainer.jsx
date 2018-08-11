@@ -7,12 +7,9 @@ class NavigationContainer extends Component {
   constructor(props) {
     super(props);
 
-    const { accounts } = this.props;
-
     this.toggle = this.toggle.bind(this);
 
     this.state = {
-      account: accounts[0],
       isOpen: false,
     };
   }
@@ -20,11 +17,14 @@ class NavigationContainer extends Component {
   toggle() {
     const { isOpen } = this.state;
 
-    this.state.isOpen = !isOpen;
+    this.setState({
+      isOpen: !isOpen,
+    });
   }
 
   render() {
-    const { isOpen, account } = this.state;
+    const { isOpen } = this.state;
+    const { account } = this.props;
 
     return (
       <Navigation
@@ -37,8 +37,8 @@ class NavigationContainer extends Component {
 }
 
 const mapStateToProps = state => ({
-  accounts: state.accounts,
   drizzleStatus: state.drizzleStatus,
+  account: state.accounts[0],
 });
 
 export default drizzleConnect(NavigationContainer, mapStateToProps);
