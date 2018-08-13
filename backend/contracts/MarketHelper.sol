@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 
-import "zeppelin/ownership/Ownable.sol";
-import "zeppelin/math/SafeMath.sol";
+import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 contract MarketHelper is Ownable {
 
@@ -30,7 +30,7 @@ contract MarketHelper is Ownable {
   event LogProductListed(uint productId, address vendor);
 
 
-  uint public numOfProducts = 0;
+  uint256 public numOfProducts = 0;
   mapping(uint => Product) public products;
 
 
@@ -81,7 +81,7 @@ contract MarketHelper is Ownable {
       0
     );
     
-    numOfProducts.add(1);
+    numOfProducts = numOfProducts.add(1);
 
     emit LogProductListed(id, msg.sender);
   }
