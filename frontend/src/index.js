@@ -15,6 +15,7 @@ import { NavigationContainer } from './components/Navigation';
 import { SellContainer } from './components/Sell';
 import { BuyContainer } from './components/Buy';
 import { MyProductsForSaleContainer } from './components/MyProductsForSale';
+import { MyPurchasedProductsContainer } from './components/MyPurchasedProducts';
 
 // Initialize react-router-redux.
 const history = syncHistoryWithStore(browserHistory, store);
@@ -30,6 +31,7 @@ ReactDOM.render(
             <Route path="/buy" component={BuyContainer} />
             <Route path="/sell" component={SellContainer} />
             <Route path="/my-products-for-sale" component={MyProductsForSaleContainer} />
+            <Route path="/my-purchased-products" component={MyPurchasedProductsContainer} />
           </Router>
         </div>
       </LoadingContainer>
