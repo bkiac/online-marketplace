@@ -1,6 +1,8 @@
 {
-  "name": "drizzle-box",
+  "name": "online-marketplace-react",
   "version": "1.0.0",
+  "description": "Final project for ConsenSys Academy's 2018 Developer Program",
+  "author": "Bence Knáb",
   "devDependencies": {
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^17.0.0",
@@ -40,7 +42,6 @@
     "jest": "17.0.2",
     "json-loader": "0.5.4",
     "object-assign": "4.1.0",
-    "openzeppelin-solidity": "^1.9.0",
     "path-exists": "2.1.0",
     "postcss-loader": "1.0.0",
     "promise": "7.1.1",

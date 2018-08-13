@@ -1,0 +1,16 @@
+{
+  "name": "online-marketplace-solidity",
+  "version": "1.0.0",
+  "description": "Final project for ConsenSys Academy's 2018 Developer Program",
+  "author": "Bence Knáb",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "openzeppelin-solidity": "1.12.0"
+  }
+}
