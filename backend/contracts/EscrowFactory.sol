@@ -44,7 +44,7 @@ contract EscrowFactory is EscrowHelper {
     onlyCustomer(productId) 
     onlyPurchasedProduct(productId) 
   {
-    require(now > products[productId].dateOfPurchase + conflictPeriod);
+    require(now > products[productId].dateOfPurchase.add(conflictPeriod));
 
     withdraw(productId);
   }
@@ -56,7 +56,7 @@ contract EscrowFactory is EscrowHelper {
     onlyVendor(productId) 
     onlyShippedProduct(productId) 
   {
-    require(now > escrows[productId].expirationDate + conflictPeriod);
+    require(now > escrows[productId].expirationDate.add(conflictPeriod));
 
     products[productId].state = State.Received;
 
@@ -93,7 +93,7 @@ contract EscrowFactory is EscrowHelper {
     require(escrows[productId].expirationDate == 0);
 
     uint guaranteedShippingTime = products[productId].guaranteedShippingTime;
-    escrows[productId].expirationDate = now + guaranteedShippingTime + conflictPeriod;
+    escrows[productId].expirationDate = now.add(guaranteedShippingTime).add(conflictPeriod);
 
     emit LogEscrowExpirationDateSetForProduct(productId);
   }

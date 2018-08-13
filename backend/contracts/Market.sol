@@ -21,7 +21,7 @@ contract Market is EscrowFactory {
 
     createEscrowForProduct(id);
 
-    msg.sender.transfer(msg.value - purchasedProduct.price);
+    msg.sender.transfer(msg.value.sub(purchasedProduct.price));
 
     emit LogProductPurchased(id, purchasedProduct.vendor, msg.sender);
   }

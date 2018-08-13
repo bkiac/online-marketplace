@@ -1,8 +1,11 @@
 pragma solidity ^0.4.24;
 
 import "zeppelin/ownership/Ownable.sol";
+import "zeppelin/math/SafeMath.sol";
 
 contract MarketHelper is Ownable {
+
+  using SafeMath for uint256;
 
   enum State {
     New,
@@ -82,7 +85,7 @@ contract MarketHelper is Ownable {
       0
     );
     
-    numOfProducts++;
+    numOfProducts.add(1);
 
     emit LogProductListed(id, msg.sender);
   }
