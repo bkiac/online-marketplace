@@ -5,9 +5,9 @@ import "./EscrowFactory.sol";
 
 contract Market is EscrowFactory {
 
-  event LogProductPurchased(uint id, address indexed vendor, address indexed customer);
-  event LogProductShipped(uint id, address indexed vendor, address indexed customer);
-  event LogProductReceived(uint id, address indexed vendor, address indexed customer);
+  event LogProductPurchased(uint id, address vendor, address customer);
+  event LogProductShipped(uint id, address vendor, address customer);
+  event LogProductReceived(uint id, address vendor, address customer);
 
 
   function purchaseProduct(uint id) public payable onlyNewProduct(id) {
@@ -16,7 +16,6 @@ contract Market is EscrowFactory {
 
     Product storage purchasedProduct = products[id];
     purchasedProduct.state = State.Purchased;
-
     purchasedProduct.customer = msg.sender;
 
     createEscrowForProduct(id, purchasedProduct.price);
@@ -30,7 +29,7 @@ contract Market is EscrowFactory {
     Product storage shippedProduct = products[id];
     shippedProduct.state = State.Shipped;
 
-    setProductEscrowExpirationDate(id, shippedProduct.guaranteedShippingTime);
+    setEscrowExpirationDate(id);
 
     emit LogProductShipped(id, msg.sender, shippedProduct.customer);
   }
