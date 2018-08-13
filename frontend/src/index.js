@@ -14,6 +14,7 @@ import drizzleOptions from './drizzleOptions';
 import { NavigationContainer } from './components/Navigation';
 import { SellContainer } from './components/Sell';
 import { BuyContainer } from './components/Buy';
+import { MyProductsForSaleContainer } from './components/MyProductsForSale';
 
 // Initialize react-router-redux.
 const history = syncHistoryWithStore(browserHistory, store);
@@ -28,6 +29,7 @@ ReactDOM.render(
             <Route path="/" component={BuyContainer} />
             <Route path="/buy" component={BuyContainer} />
             <Route path="/sell" component={SellContainer} />
+            <Route path="/my-products-for-sale" component={MyProductsForSaleContainer} />
           </Router>
         </div>
       </LoadingContainer>

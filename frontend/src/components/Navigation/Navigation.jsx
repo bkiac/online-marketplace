@@ -6,7 +6,7 @@ import {
   NavbarBrand,
   Nav,
   NavItem,
-  NavLink,
+  NavLink, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
 const Navigation = ({ isOpen, toggle, account }) => (
@@ -22,6 +22,19 @@ const Navigation = ({ isOpen, toggle, account }) => (
           <NavItem>
             <NavLink href="/sell">Sell</NavLink>
           </NavItem>
+          <UncontrolledDropdown nav inNavbar>
+            <DropdownToggle nav caret>
+              My Products
+            </DropdownToggle>
+            <DropdownMenu right>
+              <DropdownItem href="/my-products-for-sale">
+                For sale
+              </DropdownItem>
+              <DropdownItem href="/my-purchased-products">
+                Purchased
+              </DropdownItem>
+            </DropdownMenu>
+          </UncontrolledDropdown>
         </Nav>
       </Collapse>
     </Navbar>
