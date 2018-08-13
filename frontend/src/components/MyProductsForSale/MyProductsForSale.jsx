@@ -12,7 +12,7 @@ const MyProductsForSale = ({ products }) => {
   }
 
   return (
-    <p>Loading products...</p>
+    <p>Loading products for sale...</p>
   );
 };
 
