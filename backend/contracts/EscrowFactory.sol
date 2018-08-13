@@ -6,20 +6,20 @@ import "./EscrowHelper.sol";
 contract EscrowFactory is EscrowHelper {
 
   struct Escrow {
-    uint amountHeld;
-    uint expirationDate;
+    uint256 amountHeld;
+    uint256 expirationDate;
   }
 
 
-  event LogEscrowCreatedForProduct(uint productId);
-  event LogEscrowExpirationDateSetForProduct(uint productId);
-  event LogEscrowWithdrawnForProduct(uint productId, address to);
+  event LogEscrowCreatedForProduct(uint256 productId);
+  event LogEscrowExpirationDateSetForProduct(uint256 productId);
+  event LogEscrowWithdrawnForProduct(uint256 productId, address to);
 
-  uint numOfEscrows;
-  mapping(uint => Escrow) public escrows;
+  uint256 numOfEscrows;
+  mapping(uint256 => Escrow) public escrows;
 
 
-  function setEscrowExpirationDateForTest(uint productId, uint date) 
+  function setEscrowExpirationDateForTest(uint256 productId, uint256 date) 
     external
     onlyOwner
     onlyDevelopmentMode
@@ -27,10 +27,10 @@ contract EscrowFactory is EscrowHelper {
     escrows[productId].expirationDate = date;
   }
 
-  function withdrawTo(uint productId, address to) external onlyOwner {
+  function withdrawTo(uint256 productId, address to) external onlyOwner {
     Escrow storage escrow = escrows[productId];
 
-    uint amountToWithdraw = escrow.amountHeld;
+    uint256 amountToWithdraw = escrow.amountHeld;
     escrow.amountHeld = 0;
     to.transfer(amountToWithdraw);
 
@@ -39,7 +39,7 @@ contract EscrowFactory is EscrowHelper {
 
   // @notice Customer can withdraw their funds from the escrow if the vendor doesn't ship the
   // the product in time.
-  function withdrawToCustomer(uint productId) 
+  function withdrawToCustomer(uint256 productId) 
     public
     onlyCustomer(productId) 
     onlyPurchasedProduct(productId) 
@@ -54,7 +54,7 @@ contract EscrowFactory is EscrowHelper {
 
   // @notice Vendor can withdraw their funds after their guaranteed shipping time + confict period
   // if they had shipped the product and the customer didn't flag their shipment.
-  function withdrawToVendorAfterExpirationDate(uint productId) 
+  function withdrawToVendorAfterExpirationDate(uint256 productId) 
     public 
     onlyVendor(productId) 
     onlyShippedProduct(productId) 
@@ -71,7 +71,7 @@ contract EscrowFactory is EscrowHelper {
 
   // @notice Vendor can withdraw their funds if the customer confirms that they have received
   // the shipment.
-  function withdrawToVendor(uint productId) 
+  function withdrawToVendor(uint256 productId) 
     public 
     onlyVendor(productId)
     onlyReceivedProduct(productId) 
@@ -79,26 +79,26 @@ contract EscrowFactory is EscrowHelper {
     withdraw(productId);
   }
 
-  function withdraw(uint productId) internal {
+  function withdraw(uint256 productId) internal {
     Escrow storage escrow = escrows[productId];
 
-    uint amountToWithdraw = escrow.amountHeld;
+    uint256 amountToWithdraw = escrow.amountHeld;
     escrow.amountHeld = 0;
     msg.sender.transfer(amountToWithdraw);
 
     emit LogEscrowWithdrawnForProduct(productId, msg.sender);
   }
 
-  function createEscrowForProduct(uint productId) internal {
+  function createEscrowForProduct(uint256 productId) internal {
     escrows[productId] = Escrow(products[productId].price, 0);
 
     emit LogEscrowCreatedForProduct(productId);
   }
 
-  function setEscrowExpirationDate(uint productId) internal {
+  function setEscrowExpirationDate(uint256 productId) internal {
     require(escrows[productId].expirationDate == 0, "The expiration date must still be zero!");
 
-    uint guaranteedShippingTime = products[productId].guaranteedShippingTime;
+    uint256 guaranteedShippingTime = products[productId].guaranteedShippingTime;
     escrows[productId].expirationDate = now.add(guaranteedShippingTime).add(conflictPeriod);
 
     emit LogEscrowExpirationDateSetForProduct(productId);

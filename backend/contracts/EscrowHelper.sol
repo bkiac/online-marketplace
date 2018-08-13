@@ -6,7 +6,7 @@ import "./MarketHelper.sol";
 contract EscrowHelper is MarketHelper {
 
   bool private isDevelopmentMode = true;
-  uint public conflictPeriod = 3 minutes;
+  uint256 public conflictPeriod = 3 minutes;
 
 
   modifier onlyDevelopmentMode() {

@@ -17,58 +17,58 @@ contract MarketHelper is Ownable {
 
   struct Product {
     string name;
-    uint price;
-    uint id;
-    uint guaranteedShippingTime;
-    uint dateOfPurchase;
+    uint256 price;
+    uint256 id;
+    uint256 guaranteedShippingTime;
+    uint256 dateOfPurchase;
     State state;
     address vendor;
     address customer;
   }
 
 
-  event LogProductListed(uint productId, address vendor);
+  event LogProductListed(uint256 productId, address vendor);
 
 
-  uint256 public numOfProducts = 0;
-  mapping(uint => Product) public products;
+  uint256 public numOfProducts;
+  mapping(uint256 => Product) public products;
 
 
-  modifier onlyVendor(uint id) {
+  modifier onlyVendor(uint256 id) {
     require(msg.sender == products[id].vendor, "You are not the vendor of this product!");
     _;
   }
 
-  modifier onlyCustomer(uint id) {
+  modifier onlyCustomer(uint256 id) {
     require(msg.sender == products[id].customer, "You are not the customer of this product!");
     _;
   }
 
-  modifier onlyNewProduct(uint id) {
+  modifier onlyNewProduct(uint256 id) {
     require(products[id].state == State.New, "This is product is not in New state!");
     _;
   }
 
-  modifier onlyPurchasedProduct(uint id) {
+  modifier onlyPurchasedProduct(uint256 id) {
     require(products[id].state == State.Purchased, "This product is not in Purchased state!");
     _;
   }
 
-  modifier onlyShippedProduct(uint id) {
+  modifier onlyShippedProduct(uint256 id) {
     require(products[id].state == State.Shipped, "This product is not in Shipped state!");
     _;
   }
 
-  modifier onlyReceivedProduct(uint id) {
+  modifier onlyReceivedProduct(uint256 id) {
     require(products[id].state == State.Received, "This product is not in Received state!");
     _;
   }
 
 
-  function createListing(string name, uint price, uint guaranteedShippingTime) public {
+  function createListing(string name, uint256 price, uint256 guaranteedShippingTime) public {
     require(bytes(name).length < 80, "This product name is too long!");
 
-    uint id = numOfProducts;
+    uint256 id = numOfProducts;
 
     products[id] = Product(
       name,

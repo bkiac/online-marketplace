@@ -5,12 +5,12 @@ import "./EscrowFactory.sol";
 
 contract Market is EscrowFactory {
 
-  event LogProductPurchased(uint id, address vendor, address customer);
-  event LogProductShipped(uint id, address vendor, address customer);
-  event LogProductReceived(uint id, address vendor, address customer);
+  event LogProductPurchased(uint256 id, address vendor, address customer);
+  event LogProductShipped(uint256 id, address vendor, address customer);
+  event LogProductReceived(uint256 id, address vendor, address customer);
 
 
-  function purchaseProduct(uint id) public payable onlyNewProduct(id) {
+  function purchaseProduct(uint256 id) public payable onlyNewProduct(id) {
     require(msg.value >= products[id].price, "Sent ether is lower than the price of the product!");
     require(msg.sender != products[id].vendor, "You are the vendor of this product!");
 
@@ -26,7 +26,7 @@ contract Market is EscrowFactory {
     emit LogProductPurchased(id, purchasedProduct.vendor, msg.sender);
   }
 
-  function shipProduct(uint id) public onlyVendor(id) onlyPurchasedProduct(id) {
+  function shipProduct(uint256 id) public onlyVendor(id) onlyPurchasedProduct(id) {
     Product storage shippedProduct = products[id];
     shippedProduct.state = State.Shipped;
 
@@ -35,7 +35,7 @@ contract Market is EscrowFactory {
     emit LogProductShipped(id, msg.sender, shippedProduct.customer);
   }
 
-  function flagProduct(uint id) public onlyShippedProduct(id) {
+  function flagProduct(uint256 id) public onlyShippedProduct(id) {
     // TODO: if customer hasn't received their purchased product: ...
   }
 
