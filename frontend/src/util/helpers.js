@@ -51,3 +51,15 @@ export function getProductKeysFromCache(MarketState, MarketContract) {
     products: keysToProducts,
   };
 }
+
+export function addDays(date, days) {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
+export function addMinutes(date, minutes) {
+  const result = new Date(date);
+  result.setDate(result.getTime() + (minutes * 60000));
+  return result;
+}

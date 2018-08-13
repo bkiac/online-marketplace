@@ -3,7 +3,7 @@ import { drizzleConnect } from 'drizzle-react';
 import PropTypes from 'prop-types';
 
 import { filterProductsByVendor, getProductKeysFromCache, values } from '../../util/helpers';
-import MyProductsForSale from './MyProductsForSale';
+import { MyProductsForSale } from './index';
 
 class MyProductsForSaleContainer extends Component {
   constructor(props, context) {
