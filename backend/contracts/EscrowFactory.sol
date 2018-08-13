@@ -83,8 +83,8 @@ contract EscrowFactory is EscrowHelper {
     emit LogEscrowWithdrawnForProduct(productId, msg.sender);
   }
 
-  function createEscrowForProduct(uint productId, uint amountHeld) internal {
-    escrows[productId] = Escrow(amountHeld, 0);
+  function createEscrowForProduct(uint productId) internal {
+    escrows[productId] = Escrow(products[productId].price, 0);
 
     emit LogEscrowCreatedForProduct(productId);
   }

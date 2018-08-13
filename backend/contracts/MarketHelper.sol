@@ -2,7 +2,6 @@ pragma solidity ^0.4.24;
 
 import "zeppelin/ownership/Ownable.sol";
 
-
 contract MarketHelper is Ownable {
 
   enum State {
@@ -16,15 +15,16 @@ contract MarketHelper is Ownable {
   struct Product {
     string name;
     uint price;
+    uint id;
+    uint guaranteedShippingTime;
+    uint dateOfPurchase;
+    State state;
     address vendor;
     address customer;
-    uint64 id;
-    uint8 guaranteedShippingTime;
-    State state;
   }
 
 
-  event LogProductListed(uint productId, address indexed vendor);
+  event LogProductListed(uint productId, address vendor);
 
 
   uint public numOfProducts = 0;
@@ -66,19 +66,20 @@ contract MarketHelper is Ownable {
     _;
   }
 
-  function createListing(string name, uint256 price, uint8 guaranteedShippingTime) public {
+  function createListing(string name, uint price, uint guaranteedShippingTime) public {
     require(bytes(name).length < 80);
 
-    uint64 id = uint64(numOfProducts);
+    uint id = numOfProducts;
 
     products[id] = Product(
       name,
       price,
-      msg.sender,
-      0,
       id,
       guaranteedShippingTime,
-      State.New
+      0,
+      State.New,
+      msg.sender,
+      0
     );
     
     numOfProducts++;

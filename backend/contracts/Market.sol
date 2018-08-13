@@ -17,8 +17,9 @@ contract Market is EscrowFactory {
     Product storage purchasedProduct = products[id];
     purchasedProduct.state = State.Purchased;
     purchasedProduct.customer = msg.sender;
+    purchasedProduct.dateOfPurchase = now;
 
-    createEscrowForProduct(id, purchasedProduct.price);
+    createEscrowForProduct(id);
 
     msg.sender.transfer(msg.value - purchasedProduct.price);
 
