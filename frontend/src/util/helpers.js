@@ -32,3 +32,22 @@ export function filterProductsByCustomer(products, customerAddress) {
 export function values(obj) {
   return Object.keys(obj).map(key => (obj[key].value));
 }
+
+// TODO: use Higher-Order Component
+export function getProductKeysFromCache(MarketState, MarketContract) {
+  const keyToNumOfProducts = MarketContract.methods.numOfProducts.cacheCall();
+
+  const keysToProducts = [];
+  if (keyToNumOfProducts in MarketState.numOfProducts) {
+    const numOfProducts = Number.parseInt(MarketState.numOfProducts[keyToNumOfProducts].value);
+
+    for (let i = 0; i < numOfProducts; i += 1) {
+      keysToProducts.push(MarketContract.methods.products.cacheCall(i));
+    }
+  }
+
+  return {
+    numOfProducts: keyToNumOfProducts,
+    products: keysToProducts,
+  };
+}
