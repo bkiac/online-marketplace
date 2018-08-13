@@ -63,11 +63,7 @@ contract MarketHelper is Ownable {
     require(products[id].state == State.Received);
     _;
   }
-
-  modifier onlyShippedOrReceivedProduct(uint id) {
-    require(products[id].state == State.Shipped || products[id].state == State.Received);
-    _;
-  }
+  
 
   function createListing(string name, uint price, uint guaranteedShippingTime) public {
     require(bytes(name).length < 80);
