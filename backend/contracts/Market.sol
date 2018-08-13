@@ -11,8 +11,8 @@ contract Market is EscrowFactory {
 
 
   function purchaseProduct(uint id) public payable onlyNewProduct(id) {
-    require(msg.value >= products[id].price);
-    require(msg.sender != products[id].vendor);
+    require(msg.value >= products[id].price, "Sent ether is lower than the price of the product!");
+    require(msg.sender != products[id].vendor, "You are the vendor of this product!");
 
     Product storage purchasedProduct = products[id];
     purchasedProduct.state = State.Purchased;

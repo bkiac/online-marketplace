@@ -44,7 +44,10 @@ contract EscrowFactory is EscrowHelper {
     onlyCustomer(productId) 
     onlyPurchasedProduct(productId) 
   {
-    require(now > products[productId].dateOfPurchase.add(conflictPeriod));
+    require(
+      now > products[productId].dateOfPurchase.add(conflictPeriod),
+      "The conflict period hasn't expired yet!"
+    );
 
     withdraw(productId);
   }
@@ -56,7 +59,10 @@ contract EscrowFactory is EscrowHelper {
     onlyVendor(productId) 
     onlyShippedProduct(productId) 
   {
-    require(now > escrows[productId].expirationDate.add(conflictPeriod));
+    require(
+      now > escrows[productId].expirationDate.add(conflictPeriod),
+      "The conflict period hasn't expired yet!"
+    );
 
     products[productId].state = State.Received;
 
@@ -90,7 +96,7 @@ contract EscrowFactory is EscrowHelper {
   }
 
   function setEscrowExpirationDate(uint productId) internal {
-    require(escrows[productId].expirationDate == 0);
+    require(escrows[productId].expirationDate == 0, "The expiration date must still be zero!");
 
     uint guaranteedShippingTime = products[productId].guaranteedShippingTime;
     escrows[productId].expirationDate = now.add(guaranteedShippingTime).add(conflictPeriod);
