@@ -10,7 +10,7 @@ contract Market is EscrowFactory {
   event LogProductReceived(uint256 id, address vendor, address customer);
 
 
-  function purchaseProduct(uint256 id) public payable onlyNewProduct(id) {
+  function purchaseProduct(uint256 id) public payable onlyNewProduct(id) whenNotPaused {
     require(msg.value >= products[id].price, "Sent ether is lower than the price of the product!");
     require(msg.sender != products[id].vendor, "You are the vendor of this product!");
 

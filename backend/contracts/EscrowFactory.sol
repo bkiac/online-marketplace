@@ -1,9 +1,9 @@
 pragma solidity ^0.4.24;
 
-import "./EscrowHelper.sol";
+import "./MarketHelper.sol";
 
 
-contract EscrowFactory is EscrowHelper {
+contract EscrowFactory is MarketHelper {
 
   struct Escrow {
     uint256 amountHeld;

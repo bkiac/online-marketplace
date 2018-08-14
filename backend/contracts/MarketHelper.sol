@@ -1,9 +1,9 @@
 pragma solidity ^0.4.24;
 
-import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
+import "./Testable.sol";
 
-contract MarketHelper is Ownable {
+contract MarketHelper is Testable {
 
   using SafeMath for uint256;
 

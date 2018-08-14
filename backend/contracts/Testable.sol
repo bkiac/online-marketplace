@@ -1,11 +1,11 @@
 pragma solidity ^0.4.24;
 
-import "./MarketHelper.sol";
+import "openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 
 
-contract EscrowHelper is MarketHelper {
+contract Testable is Pausable {
 
-  bool private isDevelopmentMode = true;
+  bool public isDevelopmentMode = true;
   uint256 public conflictPeriod = 3 minutes;
 
 
