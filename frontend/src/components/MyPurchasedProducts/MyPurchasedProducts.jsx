@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ProductList } from '../Product';
+import { ProductList } from '../Buy';
 
 const MyPurchasedProducts = ({ products }) => {
   if (products) {
