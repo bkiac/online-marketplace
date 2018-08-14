@@ -27,8 +27,14 @@ contract EscrowFactory is EscrowHelper {
     escrows[productId].expirationDate = date;
   }
 
-  // TODO: only allow transfer to customer or vendor
+  // @notice Contract owner can resolve disputes and transfer the funds to their preferred 
+  // recipient. Allows the funds to be sent to `address(0)` if the customer hasn't been set yet.
   function withdrawTo(uint256 productId, address to) external onlyOwner {
+    require(
+      to == products[productId].vendor || to == products[productId.customer],
+      "You can only withdraw to the product customer or vendor!"
+    );
+    
     Escrow storage escrow = escrows[productId];
 
     uint256 amountToWithdraw = escrow.amountHeld;
