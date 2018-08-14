@@ -27,6 +27,7 @@ contract EscrowFactory is EscrowHelper {
     escrows[productId].expirationDate = date;
   }
 
+  // TODO: only allow transfer to customer or vendor
   function withdrawTo(uint256 productId, address to) external onlyOwner {
     Escrow storage escrow = escrows[productId];
 
@@ -79,7 +80,7 @@ contract EscrowFactory is EscrowHelper {
     withdraw(productId);
   }
 
-  function withdraw(uint256 productId) internal {
+  function withdraw(uint256 productId) internal whenNotPaused {
     Escrow storage escrow = escrows[productId];
 
     uint256 amountToWithdraw = escrow.amountHeld;
@@ -98,8 +99,14 @@ contract EscrowFactory is EscrowHelper {
   function setEscrowExpirationDate(uint256 productId) internal {
     require(escrows[productId].expirationDate == 0, "The expiration date must still be zero!");
 
-    uint256 guaranteedShippingTime = products[productId].guaranteedShippingTime;
-    escrows[productId].expirationDate = now.add(guaranteedShippingTime).add(conflictPeriod);
+    // guaranteedShippingTime
+    uint256 gts = products[productId].guaranteedShippingTime;
+
+    if (isDevelopmentMode) {
+      escrows[productId].expirationDate = now.add(gts.mul(1 minutes)).add(conflictPeriod);
+    } else {
+      escrows[productId].expirationDate = now.add(gts.mul(1 days)).add(conflictPeriod);
+    }
 
     emit LogEscrowExpirationDateSetForProduct(productId);
   }
