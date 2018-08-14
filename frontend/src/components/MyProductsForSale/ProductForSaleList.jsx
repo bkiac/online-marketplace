@@ -1,10 +1,10 @@
 import React from 'react';
-import { CardColumns } from 'reactstrap';
+import { CardDeck } from 'reactstrap';
 
-import { ProductForSaleContainer } from './index';
+import ProductForSaleContainer from './ProductForSaleContainer';
 
 const ProductsForSaleList = ({ products }) => (
-  <CardColumns>
+  <CardDeck>
     {
       products.map(product => (
         <ProductForSaleContainer
@@ -13,7 +13,7 @@ const ProductsForSaleList = ({ products }) => (
         />
       ))
     }
-  </CardColumns>
+  </CardDeck>
 );
 
 export default ProductsForSaleList;

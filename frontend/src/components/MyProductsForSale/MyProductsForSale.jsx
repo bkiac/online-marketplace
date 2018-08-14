@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ProductForSaleList } from './index';
+import ProductForSaleList from './ProductForSaleList';
 
 const MyProductsForSale = ({ products }) => {
   if (products) {

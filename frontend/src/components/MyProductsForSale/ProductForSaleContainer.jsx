@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { drizzleConnect } from 'drizzle-react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
 import StateEnum from '../../util/StateEnum';
-// import { addDays } from '../../util/helpers';
-import { addMinutes } from '../../util/helpers';
 import ProductForSale from './ProductForSale';
 
 class ProductForSaleContainer extends Component {
@@ -18,7 +17,24 @@ class ProductForSaleContainer extends Component {
 
     this.keyToEscrow = this.MarketContract.methods.escrows.cacheCall(product.id);
 
+    this.calculateWithdrawAvailability = this.calculateWithdrawAvailability.bind(this);
     this.handleShipping = this.handleShipping.bind(this);
+    this.handleWithdraw = this.handleWithdraw.bind(this);
+  }
+
+  calculateWithdrawAvailability() {
+    const { account, product, Market: MarketState } = this.props;
+
+    if (product.vendor !== account) {
+      return false;
+    }
+
+    const escrow = MarketState.escrows[this.keyToEscrow].value;
+    const expirationDate = moment(escrow.expirationDate * 1000);
+    const withdrawAvailableDate = expirationDate.add(3, 'days');
+
+    return (product.state === StateEnum.Received)
+      || (product.state === StateEnum.Shipped && moment() > withdrawAvailableDate);
   }
 
   handleShipping() {
@@ -30,38 +46,47 @@ class ProductForSaleContainer extends Component {
   }
 
   handleWithdraw() {
-    const { account, product, Market: MarketState } = this.props;
+    const { product } = this.props;
 
-    const escrow = MarketState.escrows[this.keyToEscrow].value;
-    const expirationDate = new Date(escrow.expirationDate);
-    // const withdrawAvailableDate = addDays(expirationDate, 3);
-    const withdrawAvailableDate = addMinutes(expirationDate, 3);
+    const isWithdrawable = this.calculateWithdrawAvailability();
 
-    if (product.state === StateEnum.Received && product.vendor === account) {
-      this.MarketContract.methods.withdrawToVendor(product.id).send();
-    } else if (product.state === StateEnum.Shipped && Date.now() > withdrawAvailableDate) {
-      this.MarketContract.methods.withdrawToVendorAfterExpirationDate(product.id).send();
+    if (isWithdrawable) {
+      switch (product.state) {
+        case StateEnum.Received:
+          this.MarketContract.methods.withdrawToVendor(product.id).send();
+          break;
+        case StateEnum.Shipped:
+          this.MarketContract.methods.withdrawToVendorAfterExpirationDate(product.id).send();
+          break;
+        default:
+          break;
+      }
     }
   }
 
   render() {
-    const { Market: MarketState } = props;
+    const { Market: MarketState } = this.props;
 
     if (this.keyToEscrow in MarketState.escrows) {
       const { product } = this.props;
+
       const escrow = MarketState.escrows[this.keyToEscrow].value;
+
+      const isWithdrawable = this.calculateWithdrawAvailability();
 
       return (
         <ProductForSale
-
+          product={product}
+          escrow={escrow}
+          isWithdrawable={isWithdrawable}
+          handleShipping={this.handleShipping}
+          handleWithdraw={this.handleWithdraw}
         />
-      )
+      );
     }
 
     return (
-      <ProductForSale
-        product={product}
-      />
+      <ProductForSale />
     );
   }
 }
@@ -69,6 +94,7 @@ class ProductForSaleContainer extends Component {
 const mapStateToProps = state => ({
   drizzleStatus: state.drizzleStatus,
   account: state.accounts[0],
+  Market: state.contracts.Market,
 });
 
 ProductForSaleContainer.contextTypes = {
