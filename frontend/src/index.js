@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, browserHistory } from 'react-router';
@@ -16,11 +14,13 @@ import { SellContainer } from './components/Sell';
 import { BuyContainer } from './components/Buy';
 import { MyProductsForSaleContainer } from './components/MyProductsForSale';
 import { MyPurchasedProductsContainer } from './components/MyPurchasedProducts';
-import { AdminContainer } from './components/AdminContainer';
+import { ContractSettingsContainer } from './components/Admin/ContractSettings';
+import { ProductDisputesContainer } from './components/Admin/ProductDisputes';
 
 // Initialize react-router-redux.
 const history = syncHistoryWithStore(browserHistory, store);
 
+/* eslint-disable */
 ReactDOM.render(
   (
     <DrizzleProvider options={drizzleOptions} store={store}>
@@ -29,7 +29,8 @@ ReactDOM.render(
           <NavigationContainer />
           <Router history={history}>
             <Route path="/" component={BuyContainer} />
-            <Route path="/admin" component={AdminContainer} />
+            <Route path="/admin/contract-settings" component={ContractSettingsContainer} />
+            <Route path="/admin/product-disputes" component={ProductDisputesContainer} />
             <Route path="/buy" component={BuyContainer} />
             <Route path="/sell" component={SellContainer} />
             <Route path="/my-products-for-sale" component={MyProductsForSaleContainer} />

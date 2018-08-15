@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { drizzleConnect } from 'drizzle-react';
-import Admin from './Admin';
 
-class AdminContainer extends Component {
+import ContractSettings from './ContractSettings';
+
+class ContractSettingsContainer extends Component {
   constructor(props, context) {
     super(props);
 
@@ -58,8 +59,6 @@ class AdminContainer extends Component {
 
     const isPaused = MarketState.paused[this.dataKeys.paused].value;
 
-    console.log(this.MarketContract);
-
     if (isPaused) {
       this.MarketContract.methods.unpause.cacheSend();
     } else {
@@ -78,7 +77,7 @@ class AdminContainer extends Component {
         const isPaused = MarketState.paused[this.dataKeys.paused].value;
 
         return (
-          <Admin
+          <ContractSettings
             hasLoaded
             isUserTheOwner
             isDevMode={isDevMode}
@@ -90,7 +89,7 @@ class AdminContainer extends Component {
       }
 
       return (
-        <Admin
+        <ContractSettings
           hasLoaded
           isUserTheOwner={false}
         />
@@ -98,7 +97,7 @@ class AdminContainer extends Component {
     }
 
     return (
-      <Admin
+      <ContractSettings
         hasLoaded={false}
       />
     );
@@ -111,8 +110,8 @@ const mapStateToProps = state => ({
   Market: state.contracts.Market,
 });
 
-AdminContainer.contextTypes = {
+ContractSettingsContainer.contextTypes = {
   drizzle: PropTypes.object,
 };
 
-export default drizzleConnect(AdminContainer, mapStateToProps);
+export default drizzleConnect(ContractSettingsContainer, mapStateToProps);

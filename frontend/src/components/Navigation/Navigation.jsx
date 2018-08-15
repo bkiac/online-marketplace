@@ -20,9 +20,19 @@ const Navigation = ({ isOpen, toggle, account, isOwner }) => (
       <NavbarToggler onClick={toggle} />
       <Collapse isOpen={isOpen} navbar>
         <Nav className="ml-auto" navbar>
-          <NavItem hidden={!isOwner}>
-            <NavLink href="/admin">Admin</NavLink>
-          </NavItem>
+          <UncontrolledDropdown nav inNavbar hidden={!isOwner}>
+            <DropdownToggle nav caret>
+              Admin
+            </DropdownToggle>
+            <DropdownMenu right>
+              <DropdownItem href="/admin/contract-settings">
+                Contract settings
+              </DropdownItem>
+              <DropdownItem href="/admin/product-disputes">
+                Product disputes
+              </DropdownItem>
+            </DropdownMenu>
+          </UncontrolledDropdown>
           <NavItem>
             <NavLink href="/buy">Buy</NavLink>
           </NavItem>

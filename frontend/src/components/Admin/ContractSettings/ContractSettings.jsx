@@ -1,7 +1,14 @@
 import React from 'react';
 import { Button, Col, Container, Row } from 'reactstrap';
 
-const Admin = ({ hasLoaded, isUserTheOwner, isDevMode, isPaused, handleDevMode, handlePause }) => {
+const ContractSettings = ({
+  hasLoaded,
+  isUserTheOwner,
+  isDevMode,
+  isPaused,
+  handleDevMode,
+  handlePause,
+}) => {
   if (hasLoaded) {
     if (isUserTheOwner) {
       return (
@@ -32,4 +39,4 @@ const Admin = ({ hasLoaded, isUserTheOwner, isDevMode, isPaused, handleDevMode, 
   );
 };
 
-export default Admin;
+export default ContractSettings;
