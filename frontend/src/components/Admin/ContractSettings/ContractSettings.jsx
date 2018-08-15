@@ -15,7 +15,7 @@ const ContractSettings = ({
         <Container>
           <Row>
             <Col sm="12" md={{ size: 8, offset: 2 }}>
-              <p>Development Mode: {isDevMode ? 'On' : 'Off'}</p>
+              <p>Development Mode: {isDevMode ? 'On' : 'Off'} (Unstable, only for testing!)</p>
               <Button color="warning" onClick={handleDevMode}>
                 Toggle
               </Button>
