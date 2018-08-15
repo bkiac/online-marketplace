@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import { drizzleConnect } from 'drizzle-react';
+import PropTypes from 'prop-types';
 
 import Navigation from './Navigation';
 
 class NavigationContainer extends Component {
-  constructor(props) {
+  constructor(props, context) {
     super(props);
+
+    const { drizzle: { contracts: { Market } } } = context;
+    this.MarketContract = Market;
+
+    this.keyToOwner = this.MarketContract.methods.owner.cacheCall();
 
     this.toggle = this.toggle.bind(this);
 
@@ -24,12 +30,19 @@ class NavigationContainer extends Component {
 
   render() {
     const { isOpen } = this.state;
-    const { account } = this.props;
+    const { account, Market: MarketState } = this.props;
+
+    let isOwner = false;
+    if (this.keyToOwner in MarketState.owner) {
+      const ownerAddress = MarketState.owner[this.keyToOwner].value;
+      isOwner = ownerAddress === account;
+    }
 
     return (
       <Navigation
         isOpen={isOpen}
         account={account}
+        isOwner={isOwner}
         toggle={this.toggle}
       />
     );
@@ -39,6 +52,11 @@ class NavigationContainer extends Component {
 const mapStateToProps = state => ({
   drizzleStatus: state.drizzleStatus,
   account: state.accounts[0],
+  Market: state.contracts.Market,
 });
+
+NavigationContainer.contextTypes = {
+  drizzle: PropTypes.object,
+};
 
 export default drizzleConnect(NavigationContainer, mapStateToProps);

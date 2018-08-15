@@ -6,16 +6,23 @@ import {
   NavbarBrand,
   Nav,
   NavItem,
-  NavLink, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
+  NavLink,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
 } from 'reactstrap';
 
-const Navigation = ({ isOpen, toggle, account }) => (
+const Navigation = ({ isOpen, toggle, account, isOwner }) => (
   <div>
     <Navbar color="light" light expand="md">
-      <NavbarBrand>Current account: {account}</NavbarBrand>
+      <NavbarBrand>Current account: {account} {isOwner ? '(Owner)' : ''}</NavbarBrand>
       <NavbarToggler onClick={toggle} />
       <Collapse isOpen={isOpen} navbar>
         <Nav className="ml-auto" navbar>
+          <NavItem hidden={!isOwner}>
+            <NavLink href="/admin">Admin</NavLink>
+          </NavItem>
           <NavItem>
             <NavLink href="/buy">Buy</NavLink>
           </NavItem>
