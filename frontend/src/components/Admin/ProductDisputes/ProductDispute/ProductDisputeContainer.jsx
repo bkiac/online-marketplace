@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { drizzleConnect } from 'drizzle-react';
+
 import ProductDispute from './ProductDispute';
 
 class ProductDisputeContainer extends Component {

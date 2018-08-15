@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Card, CardBody, CardSubtitle, CardText, CardTitle } from 'reactstrap';
 
-import { weiToEther } from '../../util/helpers';
+import { weiToEther } from '../../../util/helpers';
 
 const Product = ({ product, isPurchasable, handlePurchase }) => (
   <Card>

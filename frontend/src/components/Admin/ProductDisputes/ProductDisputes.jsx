@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ProductDisputeList from './ProductDisputeList';
+import { ProductDisputeList } from './ProductDispute';
 
 const ProductDisputes = ({ products }) => {
   if (products) {

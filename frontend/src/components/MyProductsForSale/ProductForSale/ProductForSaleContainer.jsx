@@ -3,7 +3,7 @@ import { drizzleConnect } from 'drizzle-react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
-import StateEnum from '../../util/StateEnum';
+import StateEnum from '../../../util/StateEnum';
 import ProductForSale from './ProductForSale';
 
 class ProductForSaleContainer extends Component {

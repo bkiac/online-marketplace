@@ -2,8 +2,8 @@ import React from 'react';
 import { Button, Card, CardBody, CardSubtitle, CardText, CardTitle } from 'reactstrap';
 import moment from 'moment';
 
-import StateEnum from '../../util/StateEnum';
-import { weiToEther } from '../../util/helpers';
+import StateEnum from '../../../util/StateEnum';
+import { weiToEther } from '../../../util/helpers';
 
 const ProductForSale = ({ product, escrow, isWithdrawable, handleShipping, handleWithdraw }) => {
   if (product) {
