@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { ProductList } from '../Buy/Product';
+import { PurchasedProductList } from './PurchasedProduct';
 
 const MyPurchasedProducts = ({ products }) => {
   if (products) {
     return (
-      <ProductList
+      <PurchasedProductList
         products={products}
       />
     );
