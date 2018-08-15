@@ -10,14 +10,13 @@ contract EscrowFactory is MarketHelper {
     uint256 expirationDate;
   }
 
+  uint256 numOfEscrows;
+  mapping(uint256 => Escrow) public escrows;
+
 
   event LogEscrowCreatedForProduct(uint256 productId);
   event LogEscrowExpirationDateSetForProduct(uint256 productId);
   event LogEscrowWithdrawnForProduct(uint256 productId, address to);
-
-
-  uint256 numOfEscrows;
-  mapping(uint256 => Escrow) public escrows;
 
 
   function setEscrowExpirationDateForTest(uint256 productId, uint256 date) 

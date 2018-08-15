@@ -28,11 +28,11 @@ contract MarketHelper is Testable {
   }
 
 
-  event LogProductListed(uint256 productId, address vendor);
-
-
   uint256 public numOfProducts;
   mapping(uint256 => Product) public products;
+
+
+  event LogProductListed(uint256 productId, address vendor);
 
 
   modifier onlyVendor(uint256 id) {
