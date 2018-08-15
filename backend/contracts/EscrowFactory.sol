@@ -47,7 +47,7 @@ contract EscrowFactory is MarketHelper {
   // @notice Customer can withdraw their funds from the escrow if the vendor doesn't ship the
   // the product in time.
   function withdrawToCustomer(uint256 productId) 
-    public
+    external
     onlyCustomer(productId) 
     onlyPurchasedProduct(productId) 
   {
@@ -62,7 +62,7 @@ contract EscrowFactory is MarketHelper {
   // @notice Vendor can withdraw their funds after their guaranteed shipping time + confict period
   // if they had shipped the product and the customer didn't flag their shipment.
   function withdrawToVendorAfterExpirationDate(uint256 productId) 
-    public 
+    external 
     onlyVendor(productId) 
     onlyShippedProduct(productId) 
   {
@@ -79,7 +79,7 @@ contract EscrowFactory is MarketHelper {
   // @notice Vendor can withdraw their funds if the customer confirms that they have received
   // the shipment.
   function withdrawToVendor(uint256 productId) 
-    public 
+    external 
     onlyVendor(productId)
     onlyReceivedProduct(productId) 
   {
@@ -108,11 +108,7 @@ contract EscrowFactory is MarketHelper {
     // guaranteedShippingTime
     uint256 gts = products[productId].guaranteedShippingTime;
 
-    if (isDevelopmentMode) {
-      escrows[productId].expirationDate = now.add(gts.mul(1 minutes)).add(conflictPeriod);
-    } else {
-      escrows[productId].expirationDate = now.add(gts.mul(1 days)).add(conflictPeriod);
-    }
+    escrows[productId].expirationDate = now.add(gts).add(conflictPeriod);
 
     emit LogEscrowExpirationDateSetForProduct(productId);
   }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input, Container, Row, Col } from 'reactstrap';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
 import { etherToWei } from '../../util/helpers';
 
@@ -30,10 +31,14 @@ class Sell extends Component {
     const { name, price, guaranteedShippingTime } = this.state;
     const { Market } = this.contracts;
 
-    Market.methods.createListing(
+    // TODO: prod mode
+    const gtsInSeconds = moment.duration(guaranteedShippingTime, 'minutes').asSeconds();
+    // const gtsInSeconds = moment.duration(guaranteedShippingTime, 'days').asSeconds();
+
+    Market.methods.createProductListing(
       name,
       etherToWei(price),
-      guaranteedShippingTime,
+      gtsInSeconds,
     ).send();
   }
 
@@ -74,8 +79,6 @@ class Sell extends Component {
                   name="guaranteedShippingTime"
                   id="guaranteedShippingTime"
                   placeholder="Guaranteed shipping time"
-                  min="0"
-                  max="255"
                   onChange={this.handleInputChange}
                 />
               </FormGroup>

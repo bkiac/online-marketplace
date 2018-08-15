@@ -12,7 +12,9 @@ contract MarketHelper is Testable {
     New,
     Purchased,
     Shipped,
-    Received
+    Received,
+    Flagged,
+    Resolved
   }
 
 
@@ -22,6 +24,7 @@ contract MarketHelper is Testable {
     uint256 id;
     uint256 guaranteedShippingTime;
     uint256 dateOfPurchase;
+    uint256 dateOfShipping;
     State state;
     address vendor;
     address customer;
@@ -30,9 +33,6 @@ contract MarketHelper is Testable {
 
   uint256 public numOfProducts;
   mapping(uint256 => Product) public products;
-
-
-  event LogProductListed(uint256 productId, address vendor);
 
 
   modifier onlyVendor(uint256 id) {
@@ -65,26 +65,9 @@ contract MarketHelper is Testable {
     _;
   }
 
-
-  function createListing(string name, uint256 price, uint256 guaranteedShippingTime) public {
-    require(bytes(name).length < 80, "This product name is too long!");
-
-    uint256 id = numOfProducts;
-
-    products[id] = Product(
-      name,
-      price,
-      id,
-      guaranteedShippingTime,
-      0,
-      State.New,
-      msg.sender,
-      0
-    );
-    
-    numOfProducts = numOfProducts.add(1);
-
-    emit LogProductListed(id, msg.sender);
+  modifier onlyFlaggedProduct(uint256 id) {
+    require(products[id].state == State.Flagged, "This product is not in Flagged state!");
+    _;
   }
 
 }
