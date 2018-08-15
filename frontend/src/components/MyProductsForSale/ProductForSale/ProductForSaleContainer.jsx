@@ -15,7 +15,12 @@ class ProductForSaleContainer extends Component {
     const { drizzle: { contracts: { Market } } } = context;
     this.MarketContract = Market;
 
-    this.keyToEscrow = this.MarketContract.methods.escrows.cacheCall(product.id);
+    const keyToEscrow = this.MarketContract.methods.escrows.cacheCall(product.id);
+    const keyToConflictPeriod = this.MarketContract.methods.conflictPeriod.cacheCall();
+    this.dataKeys = {
+      escrow: keyToEscrow,
+      conflictPeriod: keyToConflictPeriod,
+    };
 
     this.calculateWithdrawAvailability = this.calculateWithdrawAvailability.bind(this);
     this.handleShipping = this.handleShipping.bind(this);
@@ -29,12 +34,15 @@ class ProductForSaleContainer extends Component {
       return false;
     }
 
-    const escrow = MarketState.escrows[this.keyToEscrow].value;
-    const expirationDate = moment(escrow.expirationDate * 1000);
-    const withdrawAvailableDate = expirationDate.add(3, 'days');
+    const conflictPeriod = Number.parseInt(
+      MarketState.conflictPeriod[this.dataKeys.conflictPeriod].value,
+    );
+    const escrow = MarketState.escrows[this.dataKeys.escrow].value;
+    const expirationDate = moment(Number.parseInt(escrow.expirationDate) * 1000);
+    const withdrawAvailableDate = expirationDate.add(conflictPeriod, 'seconds');
 
     return (product.state === StateEnum.Received)
-      || (product.state === StateEnum.Shipped && moment() > withdrawAvailableDate);
+      || (product.state === StateEnum.Shipped && moment().isAfter(withdrawAvailableDate));
   }
 
   handleShipping() {
@@ -48,9 +56,7 @@ class ProductForSaleContainer extends Component {
   handleWithdraw() {
     const { product } = this.props;
 
-    const isWithdrawable = this.calculateWithdrawAvailability();
-
-    if (isWithdrawable) {
+    if (this.calculateWithdrawAvailability()) {
       switch (product.state) {
         case StateEnum.Received:
           this.MarketContract.methods.withdrawToVendor.cacheSend(product.id);
@@ -67,10 +73,10 @@ class ProductForSaleContainer extends Component {
   render() {
     const { Market: MarketState } = this.props;
 
-    if (this.keyToEscrow in MarketState.escrows) {
+    if (this.dataKeys.escrow in MarketState.escrows) {
       const { product } = this.props;
 
-      const escrow = MarketState.escrows[this.keyToEscrow].value;
+      const escrow = MarketState.escrows[this.dataKeys.escrow].value;
 
       const isWithdrawable = this.calculateWithdrawAvailability();
 
