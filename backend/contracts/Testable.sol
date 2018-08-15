@@ -3,10 +3,15 @@ pragma solidity ^0.4.24;
 import "openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 
 
+// TODO: set default settings to prod
 contract Testable is Pausable {
 
   bool public isDevelopmentMode = true;
   uint256 public conflictPeriod = 3 minutes;
+
+
+  event LogDevelopmentMode();
+  event LogProductionMode();
 
 
   modifier onlyDevelopmentMode() {
