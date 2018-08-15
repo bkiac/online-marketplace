@@ -41,7 +41,7 @@ class ProductForSaleContainer extends Component {
     const { account, product } = this.props;
 
     if (product.state === StateEnum.Purchased && product.vendor === account) {
-      this.MarketContract.methods.shipProduct(product.id).send();
+      this.MarketContract.methods.shipProduct(product.id).cacheSend();
     }
   }
 
@@ -53,10 +53,10 @@ class ProductForSaleContainer extends Component {
     if (isWithdrawable) {
       switch (product.state) {
         case StateEnum.Received:
-          this.MarketContract.methods.withdrawToVendor(product.id).send();
+          this.MarketContract.methods.withdrawToVendor.cacheSend(product.id);
           break;
         case StateEnum.Shipped:
-          this.MarketContract.methods.withdrawToVendorAfterExpirationDate(product.id).send();
+          this.MarketContract.methods.withdrawToVendorAfterExpirationDate.cacheSend(product.id);
           break;
         default:
           break;

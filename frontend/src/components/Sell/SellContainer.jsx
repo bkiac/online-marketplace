@@ -36,11 +36,11 @@ class SellContainer extends Component {
     const gtsInSeconds = moment.duration(guaranteedShippingTime, 'minutes').asSeconds();
     // const gtsInSeconds = moment.duration(guaranteedShippingTime, 'days').asSeconds();
 
-    Market.methods.createProductListing(
+    Market.methods.createProductListing.cacheSend(
       name,
       etherToWei(price),
       gtsInSeconds,
-    ).send();
+    );
   }
 
   render() {
