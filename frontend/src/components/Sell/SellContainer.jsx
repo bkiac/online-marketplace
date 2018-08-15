@@ -10,7 +10,10 @@ class SellContainer extends Component {
   constructor(props, context) {
     super(props);
 
-    this.contracts = context.drizzle.contracts;
+    const { drizzle: { contracts: { Market } } } = context;
+    this.MarketContract = Market;
+
+    this.keyToConflictPeriod = this.MarketContract.methods.isDevelopmentMode.cacheCall();
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -29,12 +32,15 @@ class SellContainer extends Component {
   }
 
   handleSubmit() {
-    const { name, price, guaranteedShippingTime } = this.state;
+    const { name, price, guaranteedShippingTime, Market: MarketState } = this.state;
     const { Market } = this.contracts;
 
-    // TODO: prod mode
-    const gtsInSeconds = moment.duration(guaranteedShippingTime, 'minutes').asSeconds();
-    // const gtsInSeconds = moment.duration(guaranteedShippingTime, 'days').asSeconds();
+    let gtsInSeconds = moment.duration(3, 'days').asSeconds();
+    if (MarketState.isDevelopmentMode[this.keyToConflictPeriod].value) {
+      gtsInSeconds = moment.duration(guaranteedShippingTime, 'minutes').asSeconds();
+    } else {
+      gtsInSeconds = moment.duration(guaranteedShippingTime, 'days').asSeconds();
+    }
 
     Market.methods.createProductListing.cacheSend(
       name,
@@ -54,8 +60,9 @@ class SellContainer extends Component {
 }
 
 const mapStateToProps = state => ({
-  accounts: state.accounts,
   drizzleStatus: state.drizzleStatus,
+  accounts: state.accounts,
+  Market: state.contract.Market,
 });
 
 SellContainer.contextTypes = {
