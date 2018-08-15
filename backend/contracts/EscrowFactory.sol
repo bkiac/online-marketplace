@@ -15,6 +15,7 @@ contract EscrowFactory is MarketHelper {
   event LogEscrowExpirationDateSetForProduct(uint256 productId);
   event LogEscrowWithdrawnForProduct(uint256 productId, address to);
 
+
   uint256 numOfEscrows;
   mapping(uint256 => Escrow) public escrows;
 
@@ -31,7 +32,7 @@ contract EscrowFactory is MarketHelper {
   // recipient. Allows the funds to be sent to `address(0)` if the customer hasn't been set yet.
   function withdrawTo(uint256 productId, address to) external onlyOwner {
     require(
-      to == products[productId].vendor || to == products[productId.customer],
+      to == products[productId].vendor || to == products[productId].customer,
       "You can only withdraw to the product customer or vendor!"
     );
     

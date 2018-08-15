@@ -7,6 +7,7 @@ contract MarketHelper is Testable {
 
   using SafeMath for uint256;
 
+
   enum State {
     New,
     Purchased,
