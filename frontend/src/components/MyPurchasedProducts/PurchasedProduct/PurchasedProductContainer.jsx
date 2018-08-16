@@ -10,34 +10,41 @@ class PurchasedProductContainer extends Component {
   constructor(props, context) {
     super(props);
 
-    const { product } = props;
-
     const { drizzle: { contracts: { Market } } } = context;
     this.MarketContract = Market;
 
-    const keyToEscrow = this.MarketContract.methods.escrows.cacheCall(product.id);
-    const keyToConflictPeriod = this.MarketContract.methods.conflictPeriod.cacheCall();
-    this.dataKeys = {
-      escrow: keyToEscrow,
-      conflictPeriod: keyToConflictPeriod,
-    };
+    this.keyToConflictPeriod = this.MarketContract.methods.conflictPeriod.cacheCall();
 
-    this.calculateWithdrawAvailability = this.calculateWithdrawAvailability.bind(this);
+    this.calculateProductNotShippedConflictDate = this.calculateProductNotShippedConflictDate
+      .bind(this);
+    this.isWithdrawable = this.isWithdrawable.bind(this);
+    this.calculateMaxShippingDate = this.calculateMaxShippingDate.bind(this);
+    this.calculateProductNotReceivedConflictDate = this.calculateProductNotReceivedConflictDate
+      .bind(this);
     this.handleWithdraw = this.handleWithdraw.bind(this);
+    this.isFlaggable = this.isFlaggable.bind(this);
+    this.handleFlagging = this.handleFlagging.bind(this);
+    this.handleReceive = this.handleReceive.bind(this);
   }
 
-  calculateWithdrawAvailability() {
-    const { account, product, Market: MarketState } = this.props;
+  calculateProductNotShippedConflictDate() {
+    const { product } = this.props;
+
+    const dateOfPurchase = moment(Number.parseInt(product.dateOfPurchase) * 1000);
+    return dateOfPurchase.add(
+      Number.parseInt(product.guaranteedShippingTime),
+      'seconds',
+    );
+  }
+
+  isWithdrawable() {
+    const { account, product } = this.props;
 
     if (product.customer !== account) {
       return false;
     }
 
-    const conflictPeriod = Number.parseInt(
-      MarketState.conflictPeriod[this.dataKeys.conflictPeriod].value,
-    );
-    const dateOfPurchase = moment(Number.parseInt(product.dateOfPurchase) * 1000);
-    const withdrawAvailableDate = dateOfPurchase.add(conflictPeriod, 'seconds');
+    const withdrawAvailableDate = this.calculateProductNotShippedConflictDate();
 
     return (product.state === StateEnum.Purchased) && (moment().isAfter(withdrawAvailableDate));
   }
@@ -45,20 +52,80 @@ class PurchasedProductContainer extends Component {
   handleWithdraw() {
     const { product } = this.props;
 
-    if (this.calculateWithdrawAvailability()) {
+    if (this.isWithdrawable()) {
       this.MarketContract.methods.withdrawToCustomer.cacheSend(product.id);
     }
   }
 
-  // handleFlagging() {
-  //   const { product } = this.props;
-  //
-  //   if (product.state === State.Shipped) {
-  //
-  //   }
-  // }
+  calculateMaxShippingDate() {
+    const { product } = this.props;
+
+    const dateOfShipping = moment(Number.parseInt(product.dateOfShipping) * 1000);
+    return dateOfShipping.add(
+      Number.parseInt(product.guaranteedShippingTime),
+      'seconds',
+    );
+  }
+
+  calculateProductNotReceivedConflictDate(maxShippingDate) {
+    const { Market: MarketState } = this.props;
+
+    const conflictPeriod = Number.parseInt(
+      MarketState.conflictPeriod[this.keyToConflictPeriod].value,
+    );
+    return maxShippingDate.add(conflictPeriod, 'seconds');
+  }
+
+  isFlaggable() {
+    const maxShippingDate = this.calculateMaxShippingDate();
+    const endOfConflictDate = this.calculateProductNotShippedConflictDate(maxShippingDate);
+
+    return moment().isAfter(maxShippingDate) && moment().isBefore(endOfConflictDate);
+  }
+
+  handleFlagging() {
+    const { account, product } = this.props;
+
+    if (product.state === StateEnum.Shipped && product.customer === account) {
+      if (this.isFlaggable()) {
+        this.MarketContract.methods.withdrawToCustomer(product.id);
+      }
+    }
+  }
+
+  handleReceive() {
+    const { account, product } = this.props;
+
+    if (product.state === StateEnum.Shipped && product.customer === account) {
+      this.MarketContract.methods.receiveProduct.cacheSend(product.id);
+    }
+  }
 
   render() {
+    const { product, Market: MarketState } = this.props;
+
+    if (this.keyToConflictPeriod in MarketState.conflictPeriod) {
+      const productNotShippedConflictDate = this.calculateProductNotShippedConflictDate();
+      const maxShippingDate = this.calculateMaxShippingDate();
+      const productNotReceivedConflictDate = this.calculateProductNotReceivedConflictDate(
+        maxShippingDate,
+      );
+
+      return (
+        <PurchasedProduct
+          product={product}
+          productNotShippedConflictDate={productNotShippedConflictDate}
+          maxShippingDate={maxShippingDate}
+          productNotReceivedConflictDate={productNotReceivedConflictDate}
+          isWithdrawable={this.isWithdrawable()}
+          handleWithdraw={this.handleWithdraw}
+          isFlaggable={this.isFlaggable()}
+          handleFlagging={this.handleFlagging}
+          handleReceive={this.handleReceive}
+        />
+      );
+    }
+
     return (
       <PurchasedProduct />
     );
