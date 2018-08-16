@@ -35,11 +35,11 @@ class SellContainer extends Component {
     const { name, price, guaranteedShippingTime } = this.state;
     const { Market: MarketState } = this.props;
 
-    let gtsInSeconds = moment.duration(3, 'days').asSeconds();
+    let gtsInSeconds;
     if (MarketState.isDevelopmentMode[this.keyToConflictPeriod].value) {
-      gtsInSeconds = moment.duration(guaranteedShippingTime, 'minutes').asSeconds();
+      gtsInSeconds = moment.duration(Number.parseInt(guaranteedShippingTime), 'minutes').asSeconds();
     } else {
-      gtsInSeconds = moment.duration(guaranteedShippingTime, 'days').asSeconds();
+      gtsInSeconds = moment.duration(Number.parseInt(guaranteedShippingTime), 'days').asSeconds();
     }
 
     this.MarketContract.methods.createProductListing.cacheSend(
