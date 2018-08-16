@@ -32,8 +32,8 @@ class SellContainer extends Component {
   }
 
   handleSubmit() {
-    const { name, price, guaranteedShippingTime, Market: MarketState } = this.state;
-    const { Market } = this.contracts;
+    const { name, price, guaranteedShippingTime } = this.state;
+    const { Market: MarketState } = this.props;
 
     let gtsInSeconds = moment.duration(3, 'days').asSeconds();
     if (MarketState.isDevelopmentMode[this.keyToConflictPeriod].value) {
@@ -42,7 +42,7 @@ class SellContainer extends Component {
       gtsInSeconds = moment.duration(guaranteedShippingTime, 'days').asSeconds();
     }
 
-    Market.methods.createProductListing.cacheSend(
+    this.MarketContract.methods.createProductListing.cacheSend(
       name,
       etherToWei(price),
       gtsInSeconds,
@@ -62,7 +62,7 @@ class SellContainer extends Component {
 const mapStateToProps = state => ({
   drizzleStatus: state.drizzleStatus,
   accounts: state.accounts,
-  Market: state.contract.Market,
+  Market: state.contracts.Market,
 });
 
 SellContainer.contextTypes = {
