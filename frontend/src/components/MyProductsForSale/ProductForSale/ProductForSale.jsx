@@ -74,23 +74,29 @@ const ProductForSale = ({ product, escrow, isWithdrawable, handleShipping, handl
         );
       }
       case StateEnum.Received: {
+        if (Number.parseInt(escrow.amountHeld) !== 0) {
+          return (
+            <Card>
+              <CardBody>
+                <CardTitle>[{product.id}] {product.name}</CardTitle>
+                <CardSubtitle>Price: {weiToEther(product.price)} ether</CardSubtitle>
+                <CardSubtitle>State: Received</CardSubtitle>
+                <CardText>
+                  <i>Customer: {product.customer}</i>
+                </CardText>
+                <Button
+                  color="success"
+                  onClick={handleWithdraw}
+                >
+                  Withdraw from escrow
+                </Button>
+              </CardBody>
+            </Card>
+          );
+        }
+
         return (
-          <Card>
-            <CardBody>
-              <CardTitle>[{product.id}] {product.name}</CardTitle>
-              <CardSubtitle>Price: {weiToEther(product.price)} ether</CardSubtitle>
-              <CardSubtitle>State: Received</CardSubtitle>
-              <CardText>
-                <i>Customer: {product.customer}</i>
-              </CardText>
-              <Button
-                color="success"
-                onClick={handleWithdraw}
-              >
-                Withdraw from escrow
-              </Button>
-            </CardBody>
-          </Card>
+          <div />
         );
       }
       default: {

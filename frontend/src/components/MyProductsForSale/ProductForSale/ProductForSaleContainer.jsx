@@ -49,7 +49,7 @@ class ProductForSaleContainer extends Component {
     const { account, product } = this.props;
 
     if (product.state === StateEnum.Purchased && product.vendor === account) {
-      this.MarketContract.methods.shipProduct(product.id).cacheSend();
+      this.MarketContract.methods.shipProduct.cacheSend(product.id);
     }
   }
 
@@ -59,7 +59,7 @@ class ProductForSaleContainer extends Component {
     if (this.calculateWithdrawAvailability()) {
       switch (product.state) {
         case StateEnum.Received:
-          this.MarketContract.methods.withdrawToVendor.cacheSend(product.id);
+          this.MarketContract.methods.withdrawToVendor.cacheSend(product.id, { gas: 40000 });
           break;
         case StateEnum.Shipped:
           this.MarketContract.methods.withdrawToVendorAfterExpirationDate.cacheSend(product.id);
@@ -73,7 +73,8 @@ class ProductForSaleContainer extends Component {
   render() {
     const { Market: MarketState } = this.props;
 
-    if (this.dataKeys.escrow in MarketState.escrows) {
+    if (this.dataKeys.conflictPeriod in MarketState.conflictPeriod
+      && this.dataKeys.escrow in MarketState.escrows) {
       const { product } = this.props;
 
       const escrow = MarketState.escrows[this.dataKeys.escrow].value;
