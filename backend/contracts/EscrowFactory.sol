@@ -16,7 +16,6 @@ contract EscrowFactory is MarketHelper {
   }
 
 
-  uint256 numOfEscrows; // TODO: remove
   mapping(uint256 => Escrow) public escrows;
 
 
