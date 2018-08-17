@@ -29,7 +29,11 @@ contract EscrowFactory is MarketHelper {
 
   // @notice Contract owner can resolve disputes and transfer the funds to their preferred 
   // recipient. Allows the funds to be sent to `address(0)` if the customer hasn't been set yet.
-  function withdrawTo(uint256 productId, address to) external onlyOwner {
+  function withdrawTo(uint256 productId, address to) 
+    external
+    onlyOwner
+    onlyFlaggedProduct(productId)
+  {
     require(
       to == products[productId].vendor || to == products[productId].customer,
       "You can only withdraw to the product customer or vendor!"
@@ -41,7 +45,7 @@ contract EscrowFactory is MarketHelper {
     escrow.amountHeld = 0;
     to.transfer(amountToWithdraw);
 
-    emit LogEscrowWithdrawnForProduct(productId, msg.sender);
+    emit LogEscrowWithdrawnForProduct(productId, to);
   }
 
   // @notice Customer can withdraw their funds from the escrow if the vendor doesn't ship the
@@ -55,6 +59,8 @@ contract EscrowFactory is MarketHelper {
       now > products[productId].dateOfPurchase.add(conflictPeriod),
       "The conflict period hasn't expired yet!"
     );
+
+    products[productId].state = State.Resolved;
 
     withdraw(productId);
   }
@@ -87,6 +93,8 @@ contract EscrowFactory is MarketHelper {
   }
 
   function withdraw(uint256 productId) internal whenNotPaused {
+    require(escrows[productId].amountHeld != 0);
+
     Escrow storage escrow = escrows[productId];
 
     uint256 amountToWithdraw = escrow.amountHeld;

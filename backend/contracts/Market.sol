@@ -94,6 +94,8 @@ contract Market is EscrowFactory {
     Product storage product = products[id];
     product.state = State.Resolved;
     
+    withdrawTo(id, inFavor);
+
     emit LogProductDisputeResolved(id, inFavor);
   }
 

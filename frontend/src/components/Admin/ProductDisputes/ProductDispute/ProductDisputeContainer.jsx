@@ -11,6 +11,12 @@ class ProductDisputeContainer extends Component {
     const { drizzle: { contracts: { Market } } } = context;
     this.MarketContract = Market;
 
+    const keyToOwner = this.MarketContract.methods.owner.cacheCall();
+
+    this.dataKeys = {
+      owner: keyToOwner,
+    };
+
     this.isAccountTheOwner = this.isAccountTheOwner.bind(this);
     this.handleDisputeResolution = this.handleDisputeResolution.bind(this);
   }
@@ -32,13 +38,19 @@ class ProductDisputeContainer extends Component {
   }
 
   render() {
-    const { product } = this.props;
+    const { product, Market: MarketState } = this.props;
+
+    if (this.dataKeys.owner in MarketState.owner) {
+      return (
+        <ProductDispute
+          product={product}
+          handleDisputeResolution={this.handleDisputeResolution}
+        />
+      );
+    }
 
     return (
-      <ProductDispute
-        product={product}
-        handleDisputeResolution={this.handleDisputeResolution}
-      />
+      <ProductDispute />
     );
   }
 }
