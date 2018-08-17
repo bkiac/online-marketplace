@@ -84,7 +84,7 @@ class PurchasedProductContainer extends Component {
 
   isFlaggable() {
     const maxShippingDate = this.calculateMaxShippingDate();
-    const endOfConflictDate = this.calculateProductNotShippedConflictDate(maxShippingDate);
+    const endOfConflictDate = this.calculateProductNotReceivedConflictDate();
 
     return moment().isAfter(maxShippingDate) && moment().isBefore(endOfConflictDate);
   }
@@ -94,7 +94,7 @@ class PurchasedProductContainer extends Component {
 
     if (product.state === StateEnum.Shipped && product.customer === account) {
       if (this.isFlaggable()) {
-        this.MarketContract.methods.withdrawToCustomer(product.id, { gas: 50000 });
+        this.MarketContract.methods.flagProduct.cacheSend(product.id, { gas: 50000 });
       }
     }
   }
@@ -116,6 +116,8 @@ class PurchasedProductContainer extends Component {
       const productNotReceivedConflictDate = this.calculateProductNotReceivedConflictDate(
         maxShippingDate,
       );
+      const isWithdrawable = this.isWithdrawable();
+      const isFlaggable = this.isFlaggable();
 
       return (
         <PurchasedProduct
@@ -123,9 +125,9 @@ class PurchasedProductContainer extends Component {
           productNotShippedConflictDate={productNotShippedConflictDate}
           maxShippingDate={maxShippingDate}
           productNotReceivedConflictDate={productNotReceivedConflictDate}
-          isWithdrawable={this.isWithdrawable()}
+          isWithdrawable={isWithdrawable}
           handleWithdraw={this.handleWithdraw}
-          isFlaggable={this.isFlaggable()}
+          isFlaggable={isFlaggable}
           handleFlagging={this.handleFlagging}
           handleReceive={this.handleReceive}
         />
