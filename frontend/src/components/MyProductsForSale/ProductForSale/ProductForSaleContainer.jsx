@@ -89,10 +89,11 @@ class ProductForSaleContainer extends Component {
     if (this.calculateWithdrawAvailability()) {
       switch (product.state) {
         case StateEnum.Received:
-          this.MarketContract.methods.withdrawToVendor.cacheSend(product.id, { gas: 40000 });
+          this.MarketContract.methods.withdrawToVendor.cacheSend(product.id, { gas: 50000 });
           break;
         case StateEnum.Shipped:
-          this.MarketContract.methods.withdrawToVendorAfterExpirationDate.cacheSend(product.id);
+          this.MarketContract.methods.withdrawToVendorAfterExpirationDate
+            .cacheSend(product.id, { gas: 50000 });
           break;
         default:
           break;

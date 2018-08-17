@@ -53,7 +53,7 @@ class PurchasedProductContainer extends Component {
     const { product } = this.props;
 
     if (this.isWithdrawable()) {
-      this.MarketContract.methods.withdrawToCustomer.cacheSend(product.id);
+      this.MarketContract.methods.withdrawToCustomer.cacheSend(product.id, { gas: 50000 });
     }
   }
 
@@ -94,7 +94,7 @@ class PurchasedProductContainer extends Component {
 
     if (product.state === StateEnum.Shipped && product.customer === account) {
       if (this.isFlaggable()) {
-        this.MarketContract.methods.withdrawToCustomer(product.id);
+        this.MarketContract.methods.withdrawToCustomer(product.id, { gas: 50000 });
       }
     }
   }
