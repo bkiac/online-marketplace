@@ -38,32 +38,6 @@ contract EscrowFactory is MarketHelper {
   }
 
   /**
-   * @notice Contract owner can withdraw from the escrow to either the vendor's or customer's
-   * address.
-   * @dev Allows funds to be sent to `address(0)` if the customer hasn't been set yet.
-   * @param productId Product ID
-   * @param to Address to transfer the funds
-   */
-  function withdrawTo(uint256 productId, address to) 
-    external
-    onlyOwner
-    onlyFlaggedProduct(productId)
-  {
-    require(
-      to == products[productId].vendor || to == products[productId].customer,
-      "You can only withdraw to the product customer or vendor!"
-    );
-    
-    Escrow storage escrow = escrows[productId];
-
-    uint256 amountToWithdraw = escrow.amountHeld;
-    escrow.amountHeld = 0;
-    to.transfer(amountToWithdraw);
-
-    emit LogEscrowWithdrawnForProduct(productId, to);
-  }
-
-  /**
    * @notice Customer can withdraw their funds from the escrow if the vendor doesn't ship the 
    * product in time.
    * @param productId Product ID
@@ -134,6 +108,32 @@ contract EscrowFactory is MarketHelper {
     msg.sender.transfer(amountToWithdraw);
 
     emit LogEscrowWithdrawnForProduct(productId, msg.sender);
+  }
+
+  /**
+   * @notice Contract owner can withdraw from the escrow to either the vendor's or customer's
+   * address.
+   * @dev Allows funds to be sent to `address(0)` if the customer hasn't been set yet.
+   * @param productId Product ID
+   * @param to Address to transfer the funds
+   */
+  function withdrawTo(uint256 productId, address to) 
+    internal
+    onlyOwner
+    onlyFlaggedProduct(productId)
+  {
+    require(
+      to == products[productId].vendor || to == products[productId].customer,
+      "You can only withdraw to the product customer or vendor!"
+    );
+    
+    Escrow storage escrow = escrows[productId];
+
+    uint256 amountToWithdraw = escrow.amountHeld;
+    escrow.amountHeld = 0;
+    to.transfer(amountToWithdraw);
+
+    emit LogEscrowWithdrawnForProduct(productId, to);
   }
 
   /**
