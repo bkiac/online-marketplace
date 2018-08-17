@@ -22,9 +22,39 @@ class ProductForSaleContainer extends Component {
       conflictPeriod: keyToConflictPeriod,
     };
 
+    this.calculateProductNotShippedConflictDate = this.calculateProductNotShippedConflictDate
+      .bind(this);
+    this.calculateProductNotReceivedConflictDate = this.calculateProductNotReceivedConflictDate
+      .bind(this);
     this.calculateWithdrawAvailability = this.calculateWithdrawAvailability.bind(this);
     this.handleShipping = this.handleShipping.bind(this);
     this.handleWithdraw = this.handleWithdraw.bind(this);
+  }
+
+  calculateProductNotShippedConflictDate() {
+    const { product, Market: MarketState } = this.props;
+
+    const dateOfPurchase = moment(Number.parseInt(product.dateOfPurchase) * 1000);
+    const conflictPeriod = Number.parseInt(
+      MarketState.conflictPeriod[this.dataKeys.conflictPeriod].value,
+    );
+
+    return dateOfPurchase.add(conflictPeriod, 'seconds');
+  }
+
+  calculateProductNotReceivedConflictDate() {
+    const { product, Market: MarketState } = this.props;
+
+    const dateOfShipping = moment(Number.parseInt(product.dateOfShipping) * 1000);
+    const maxShippingDate = dateOfShipping.add(
+      Number.parseInt(product.guaranteedShippingTime),
+      'seconds',
+    );
+    const conflictPeriod = Number.parseInt(
+      MarketState.conflictPeriod[this.dataKeys.conflictPeriod].value,
+    );
+
+    return maxShippingDate.add(conflictPeriod, 'seconds');
   }
 
   calculateWithdrawAvailability() {
@@ -80,12 +110,19 @@ class ProductForSaleContainer extends Component {
       const escrow = MarketState.escrows[this.dataKeys.escrow].value;
 
       const isWithdrawable = this.calculateWithdrawAvailability();
+      const shipProductUntil = this.calculateProductNotShippedConflictDate();
+      const gts = moment.duration(Number.parseInt(product.guaranteedShippingTime), 'seconds')
+        .asDays();
+      const withdrawAvailableAt = this.calculateProductNotReceivedConflictDate();
 
       return (
         <ProductForSale
           product={product}
           escrow={escrow}
           isWithdrawable={isWithdrawable}
+          shipProductUntil={shipProductUntil}
+          guaranteedShippingTime={gts}
+          withdrawAvailableAt={withdrawAvailableAt}
           handleShipping={this.handleShipping}
           handleWithdraw={this.handleWithdraw}
         />

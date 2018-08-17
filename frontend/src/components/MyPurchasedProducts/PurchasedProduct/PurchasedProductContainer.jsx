@@ -67,12 +67,18 @@ class PurchasedProductContainer extends Component {
     );
   }
 
-  calculateProductNotReceivedConflictDate(maxShippingDate) {
-    const { Market: MarketState } = this.props;
+  calculateProductNotReceivedConflictDate() {
+    const { product, Market: MarketState } = this.props;
 
+    const dateOfShipping = moment(Number.parseInt(product.dateOfShipping) * 1000);
+    const maxShippingDate = dateOfShipping.add(
+      Number.parseInt(product.guaranteedShippingTime),
+      'seconds',
+    );
     const conflictPeriod = Number.parseInt(
       MarketState.conflictPeriod[this.keyToConflictPeriod].value,
     );
+
     return maxShippingDate.add(conflictPeriod, 'seconds');
   }
 

@@ -1,11 +1,19 @@
 import React from 'react';
 import { Button, Card, CardBody, CardSubtitle, CardText, CardTitle } from 'reactstrap';
-import moment from 'moment';
 
 import StateEnum from '../../../util/StateEnum';
 import { weiToEther } from '../../../util/helpers';
 
-const ProductForSale = ({ product, escrow, isWithdrawable, handleShipping, handleWithdraw }) => {
+const ProductForSale = ({
+  product,
+  escrow,
+  isWithdrawable,
+  shipProductUntil,
+  guaranteedShippingTime,
+  withdrawAvailableAt,
+  handleShipping,
+  handleWithdraw,
+}) => {
   if (product) {
     switch (product.state) {
       case StateEnum.New: {
@@ -33,10 +41,12 @@ const ProductForSale = ({ product, escrow, isWithdrawable, handleShipping, handl
                 <i>Customer: {product.customer}</i>
                 <br />
                 You have to ship the product until {
-                moment(escrow.expirationDate * 1000).add(3, 'days').format('YYYY-MM-DD HH:mm')
-              }.
+                  shipProductUntil.format('YYYY-MM-DD HH:mm')
+                }.
                 <br />
-                You set the guaranteed shipping time to {product.guaranteedShippingTime} days.
+                You set the guaranteed shipping time to {
+                  guaranteedShippingTime
+                } days.
               </CardText>
               <Button
                 color="primary"
@@ -59,8 +69,8 @@ const ProductForSale = ({ product, escrow, isWithdrawable, handleShipping, handl
                 <i>Customer: {product.customer}</i>
                 <br />
                 You can withdraw from the escrow if the product is received or at latest {
-                moment(escrow.expirationDate * 1000).add(3, 'days').format('YYYY-MM-DD HH:mm')
-              }
+                  withdrawAvailableAt.format('YYYY-MM-DD HH:mm')
+                }
               </CardText>
               <Button
                 color={isWithdrawable ? 'success' : 'secondary'}

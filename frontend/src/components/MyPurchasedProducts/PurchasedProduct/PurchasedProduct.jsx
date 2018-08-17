@@ -52,7 +52,7 @@ const PurchasedProduct = ({
               <CardText>
                 <i>Vendor: {product.vendor}</i>
                 <br />
-                If you haven't received the shipment, until {
+                If you haven't received the shipment until {
                   maxShippingDate.format('YYYY-MM-DD HH:mm')
                 }, you can flag this product for admin review until {
                   productNotReceivedConflictDate.format('YYYY-MM-DD HH:mm')

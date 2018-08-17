@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { drizzleConnect } from 'drizzle-react';
 import PropTypes from 'prop-types';
+import moment from 'moment/moment';
 
 import Product from './Product';
 
@@ -27,11 +28,14 @@ class ProductContainer extends Component {
     const { account, product } = this.props;
 
     const isPurchasable = account !== product.vendor;
+    const gts = moment.duration(Number.parseInt(product.guaranteedShippingTime), 'seconds')
+      .asDays();
 
     return (
       <Product
         product={product}
         isPurchasable={isPurchasable}
+        guaranteedShippingTime={gts}
         handlePurchase={this.handlePurchase}
       />
     );
