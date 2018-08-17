@@ -3,6 +3,12 @@ pragma solidity ^0.4.24;
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "./Testable.sol";
 
+/**
+ * @title MarketHelper
+ * @author Bence Knáb
+ * @notice This is a wrapper contract for the application, to store product data and modifiers
+ * concerning this data.
+ */
 contract MarketHelper is Testable {
 
   using SafeMath for uint256;
@@ -35,36 +41,64 @@ contract MarketHelper is Testable {
   mapping(uint256 => Product) public products;
 
 
+  /** 
+   * @dev Modifier throws if `msg.sender` is not the product's vendor.
+   * @param id Product ID
+   */
   modifier onlyVendor(uint256 id) {
     require(msg.sender == products[id].vendor, "You are not the vendor of this product!");
     _;
   }
 
+  /** 
+   * @dev Modifier throws if `msg.sender` is not the product's customer.
+   * @param id Product ID
+   */
   modifier onlyCustomer(uint256 id) {
     require(msg.sender == products[id].customer, "You are not the customer of this product!");
     _;
   }
 
+  /** 
+   * @dev Modifier throws if the product is not in `New` state.
+   * @param id Product ID
+   */
   modifier onlyNewProduct(uint256 id) {
     require(products[id].state == State.New, "This is product is not in New state!");
     _;
   }
 
+  /** 
+   * @dev Modifier throws if the product is not in `Purchased` state.
+   * @param id Product ID
+   */
   modifier onlyPurchasedProduct(uint256 id) {
     require(products[id].state == State.Purchased, "This product is not in Purchased state!");
     _;
   }
 
+  /** 
+   * @dev Modifier throws if the product is not in `Shipped` state.
+   * @param id Product ID
+   */
   modifier onlyShippedProduct(uint256 id) {
     require(products[id].state == State.Shipped, "This product is not in Shipped state!");
     _;
   }
 
+  /** 
+   * @dev Modifier throws if the product is not in `Received` state.
+   * @param id Product ID
+   */
   modifier onlyReceivedProduct(uint256 id) {
     require(products[id].state == State.Received, "This product is not in Received state!");
     _;
   }
 
+  /** 
+   * @dev Modifier throws if the product is not in `Flagged` state.
+   * @param id Product ID
+   */
   modifier onlyFlaggedProduct(uint256 id) {
     require(products[id].state == State.Flagged, "This product is not in Flagged state!");
     _;

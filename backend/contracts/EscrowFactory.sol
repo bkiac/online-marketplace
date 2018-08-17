@@ -3,6 +3,11 @@ pragma solidity ^0.4.24;
 import "./MarketHelper.sol";
 
 
+/**
+ * @title EscrowFactory
+ * @author Bence Knáb
+ * @notice This contract is responsible for escrow management.
+ */
 contract EscrowFactory is MarketHelper {
 
   struct Escrow {
@@ -10,7 +15,8 @@ contract EscrowFactory is MarketHelper {
     uint256 expirationDate;
   }
 
-  uint256 numOfEscrows;
+
+  uint256 numOfEscrows; // TODO: remove
   mapping(uint256 => Escrow) public escrows;
 
 
@@ -19,6 +25,10 @@ contract EscrowFactory is MarketHelper {
   event LogEscrowWithdrawnForProduct(uint256 productId, address to);
 
 
+  /**
+   * @dev This function can only be called by the contract owner in development mode.
+   * Allows to manually set expiration dates to test time dependent methods.
+   */
   function setEscrowExpirationDateForTest(uint256 productId, uint256 date) 
     external
     onlyOwner
@@ -27,8 +37,13 @@ contract EscrowFactory is MarketHelper {
     escrows[productId].expirationDate = date;
   }
 
-  // @notice Contract owner can resolve disputes and transfer the funds to their preferred 
-  // recipient. Allows the funds to be sent to `address(0)` if the customer hasn't been set yet.
+  /**
+   * @notice Contract owner can withdraw from the escrow to either the vendor's or customer's
+   * address.
+   * @dev Allows funds to be sent to `address(0)` if the customer hasn't been set yet.
+   * @param productId Product ID
+   * @param to Address to transfer the funds
+   */
   function withdrawTo(uint256 productId, address to) 
     external
     onlyOwner
@@ -48,8 +63,11 @@ contract EscrowFactory is MarketHelper {
     emit LogEscrowWithdrawnForProduct(productId, to);
   }
 
-  // @notice Customer can withdraw their funds from the escrow if the vendor doesn't ship the
-  // the product in time.
+  /**
+   * @notice Customer can withdraw their funds from the escrow if the vendor doesn't ship the 
+   * product in time.
+   * @param productId Product ID
+   */
   function withdrawToCustomer(uint256 productId) 
     external
     onlyCustomer(productId) 
@@ -65,8 +83,11 @@ contract EscrowFactory is MarketHelper {
     withdraw(productId);
   }
 
-  // @notice Vendor can withdraw their funds after their guaranteed shipping time + confict period
-  // if they had shipped the product and the customer didn't flag their shipment.
+  /**
+   * @notice Vendor can withdraw funds after the guaranteed shipping time and the conflict period 
+   * has passed, if the customer didn't flag their shipment for failed delivery.
+   * @param productId Product ID
+   */
   function withdrawToVendorAfterExpirationDate(uint256 productId) 
     external 
     onlyVendor(productId) 
@@ -82,8 +103,11 @@ contract EscrowFactory is MarketHelper {
     withdraw(productId);
   }
 
-  // @notice Vendor can withdraw their funds if the customer confirms that they have received
-  // the shipment.
+  /**
+   * @notice Vendor can withdraw the funds if the customer has confirmed that they received the
+   * shipment.
+   * @param productId Product ID
+   */
   function withdrawToVendor(uint256 productId) 
     external 
     onlyVendor(productId)
@@ -92,8 +116,16 @@ contract EscrowFactory is MarketHelper {
     withdraw(productId);
   }
 
+  /**
+   * @dev Internal function to withdraw funds from an escrow. Fails if the funds from the escrow
+   * has already been withdrawn.
+   * @param productId Product ID
+   */
   function withdraw(uint256 productId) internal whenNotPaused {
-    require(escrows[productId].amountHeld != 0);
+    require(
+      escrows[productId].amountHeld != 0, 
+      "The funds from this escrow has already been withdrawn!"
+    );
 
     Escrow storage escrow = escrows[productId];
 
@@ -104,12 +136,21 @@ contract EscrowFactory is MarketHelper {
     emit LogEscrowWithdrawnForProduct(productId, msg.sender);
   }
 
+  /**
+   * @dev Internal function to create an escrow for a product after purchase. Escrows are stored in
+   * a productId -> Escrow mapping for easy look up.
+   * @param productId Product ID
+   */
   function createEscrowForProduct(uint256 productId) internal {
     escrows[productId] = Escrow(products[productId].price, 0);
 
     emit LogEscrowCreatedForProduct(productId);
   }
 
+  /**
+   * @dev Internal function to set an escrow's expiration date after the product has been shipped.
+   * @param productId Product ID
+   */
   function setEscrowExpirationDate(uint256 productId) internal {
     require(escrows[productId].expirationDate == 0, "The expiration date must still be zero!");
 
