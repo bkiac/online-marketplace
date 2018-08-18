@@ -1,14 +1,14 @@
 pragma solidity ^0.4.24;
 
-import "./EscrowFactory.sol";
+import "./Testable.sol";
 
 
 /**
  * @title Market
  * @author Bence Knáb
- * @notice This contract is responsible for product management.
+ * @notice This is the main contract which is responsible for product management.
  */
-contract Market is EscrowFactory {
+contract Market is Testable {
 
   event LogProductListed(uint256 id, address vendor);
   event LogProductPurchased(uint256 id, address vendor, address customer);
@@ -116,14 +116,14 @@ contract Market is EscrowFactory {
       "You can't flag this product yet!"
     );
     require(
-      escrows[id].expirationDate > now,
+      now < escrows[id].expirationDate,
       "You can't flag this product anymore!"
     );
 
     Product storage product = products[id];
     product.state = State.Flagged;
 
-    emit LogProductFlagged(id, msg.sender, product.customer);
+    emit LogProductFlagged(id, product.vendor, product.customer);
   }
 
   /**
@@ -137,11 +137,11 @@ contract Market is EscrowFactory {
       inFavor == products[id].vendor || inFavor == products[id].customer,
       "You can only resolve the dispute in favor of the vendor or the customer!"
     );
+    
+    withdrawTo(id, inFavor);
 
     Product storage product = products[id];
     product.state = State.Resolved;
-    
-    withdrawTo(id, inFavor);
 
     emit LogProductDisputeResolved(id, inFavor);
   }

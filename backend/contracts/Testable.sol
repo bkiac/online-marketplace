@@ -1,18 +1,16 @@
 pragma solidity ^0.4.24;
 
-import "openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
-
+import "./EscrowFactory.sol";
 
 /**
  * @title Testable
  * @author Bence Knáb
- * @dev This contract allows the contract owner to toggle development / production mode and
- * holds the `conflictPeriod` time.
+ * @notice This contract allows the contract owner to toggle development / production mode and to
+ * manipulate the various date fields.
  */
-contract Testable is Pausable {
+contract Testable is EscrowFactory {
 
-  bool public isDevelopmentMode = true;
-  uint256 public conflictPeriod = 3 minutes;
+  bool public isDevelopmentMode = false;
 
 
   event LogDevelopmentMode();
@@ -43,6 +41,42 @@ contract Testable is Pausable {
   function setProductionMode() external onlyOwner {
     isDevelopmentMode = false;
     conflictPeriod = 3 days;
+  }
+
+  /**
+   * @dev This function can only be called by the contract owner in development mode.
+   * Allows to manually set the purchase date to test time-dependent methods.
+   */
+  function setProductDateOfPurchaseForTest(uint256 productId, uint256 date) 
+    external
+    onlyOwner
+    onlyDevelopmentMode
+  {
+    products[productId].dateOfPurchase = date;
+  }
+
+  /**
+   * @dev This function can only be called by the contract owner in development mode.
+   * Allows to manually set the shipping date to test time-dependent methods.
+   */
+  function setProductDateOfShippingForTest(uint256 productId, uint256 date) 
+    external
+    onlyOwner
+    onlyDevelopmentMode
+  {
+    products[productId].dateOfShipping = date;
+  }
+
+  /**
+   * @dev This function can only be called by the contract owner in development mode.
+   * Allows to manually set the expiration date to test time-dependent methods.
+   */
+  function setEscrowExpirationDateForTest(uint256 productId, uint256 date) 
+    external
+    onlyOwner
+    onlyDevelopmentMode
+  {
+    escrows[productId].expirationDate = date;
   }
 
 }

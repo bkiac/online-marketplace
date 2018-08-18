@@ -25,20 +25,9 @@ contract EscrowFactory is MarketHelper {
 
 
   /**
-   * @dev This function can only be called by the contract owner in development mode.
-   * Allows to manually set expiration dates to test time dependent methods.
-   */
-  function setEscrowExpirationDateForTest(uint256 productId, uint256 date) 
-    external
-    onlyOwner
-    onlyDevelopmentMode
-  {
-    escrows[productId].expirationDate = date;
-  }
-
-  /**
    * @notice Customer can withdraw their funds from the escrow if the vendor doesn't ship the 
    * product in time.
+   * @dev The state is set to Resolved to signal that the escrow has been withdrawn.
    * @param productId Product ID
    */
   function withdrawToCustomer(uint256 productId) 
@@ -87,26 +76,6 @@ contract EscrowFactory is MarketHelper {
     onlyReceivedProduct(productId) 
   {
     withdraw(productId);
-  }
-
-  /**
-   * @dev Internal function to withdraw funds from an escrow. Fails if the funds from the escrow
-   * has already been withdrawn.
-   * @param productId Product ID
-   */
-  function withdraw(uint256 productId) internal whenNotPaused {
-    require(
-      escrows[productId].amountHeld != 0, 
-      "The funds from this escrow has already been withdrawn!"
-    );
-
-    Escrow storage escrow = escrows[productId];
-
-    uint256 amountToWithdraw = escrow.amountHeld;
-    escrow.amountHeld = 0;
-    msg.sender.transfer(amountToWithdraw);
-
-    emit LogEscrowWithdrawnForProduct(productId, msg.sender);
   }
 
   /**
@@ -159,6 +128,26 @@ contract EscrowFactory is MarketHelper {
     escrows[productId].expirationDate = now.add(gts).add(conflictPeriod);
 
     emit LogEscrowExpirationDateSetForProduct(productId);
+  }
+
+  /**
+   * @dev Internal function to withdraw funds from an escrow. Fails if the funds from the escrow
+   * has already been withdrawn.
+   * @param productId Product ID
+   */
+  function withdraw(uint256 productId) private whenNotPaused {
+    require(
+      escrows[productId].amountHeld != 0, 
+      "The funds from this escrow has already been withdrawn!"
+    );
+
+    Escrow storage escrow = escrows[productId];
+
+    uint256 amountToWithdraw = escrow.amountHeld;
+    escrow.amountHeld = 0;
+    msg.sender.transfer(amountToWithdraw);
+
+    emit LogEscrowWithdrawnForProduct(productId, msg.sender);
   }
 
 }
