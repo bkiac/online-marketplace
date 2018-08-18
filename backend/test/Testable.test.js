@@ -6,15 +6,18 @@ const Market = artifacts.require('Market');
 
 contract('Testable', function (accounts) {
   let market;
+
   const vendor = accounts[1];
   const customer = accounts[2];
+
   const testProduct = {
     id: 0,
     name: 'Test Product',
     price: web3.toWei(1, 'ether'),
     guaranteedShippingTime: moment.duration(3, 'days').asSeconds(),
-  }
+  };
 
+  
   beforeEach(async function () {
     market = await Market.new();
   });

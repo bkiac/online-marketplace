@@ -11,16 +11,18 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 // because they are dependent on each other.
 contract('Market', function (accounts) {
   let market;
-  const owner = accounts[0];
+
   const vendor = accounts[1];
   const customer = accounts[2];
   const randomAddress = accounts[3];
+
   const testProduct = {
     id: 0,
     name: 'Test Product',
     price: web3.toWei(1, 'ether'),
     guaranteedShippingTime: moment.duration(3, 'days').asSeconds(),
-  }
+  };
+
 
   beforeEach(async function () {
     market = await Market.new();
