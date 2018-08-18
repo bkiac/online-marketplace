@@ -1,5 +1,6 @@
 const moment = require('moment');
 const { expectThrow } = require('./util/expectThrow');
+const { convertProduct, convertEscrow } = require('./util/structs');
 
 const Market = artifacts.require('Market');
 
@@ -57,9 +58,9 @@ contract('Testable', function (accounts) {
         /// Set the purchase date to now
         const newPurchaseDate = moment().unix();
         await market.setProductDateOfPurchaseForTest(id, newPurchaseDate);
-        const product = await market.products(id);
+        const product = convertProduct(await market.products(id));
   
-        assert.equal(product[4].toNumber(), newPurchaseDate);
+        assert.equal(product.dateOfPurchase, newPurchaseDate);
       });
   
       it('should only work in development mode', async function () {
@@ -90,11 +91,11 @@ contract('Testable', function (accounts) {
         /// Set the shipping date to now
         const newShippingDate = moment().unix();
         await market.setProductDateOfShippingForTest(id, newShippingDate);
-        const product = await market.products(id);
+        const product = convertProduct(await market.products(id));
   
-        assert.equal(product[4].toNumber(), newShippingDate);
+        assert.equal(product.dateOfShipping, newShippingDate);
       });
-  
+
       it('should only work in development mode', async function () {
         const { id } = testProduct;
 
@@ -123,9 +124,9 @@ contract('Testable', function (accounts) {
         /// Set the expiration date to now
         const newExpirationDate = moment().unix();
         await market.setEscrowExpirationDateForTest(id, newExpirationDate);
-        const escrow = await market.escrows(id);
+        const escrow = convertEscrow(await market.escrows(id));
   
-        assert.equal(escrow[1].toNumber(), newExpirationDate);
+        assert.equal(escrow.expirationDate, newExpirationDate);
       });
       
       it('should only work in development mode', async function () {

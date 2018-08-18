@@ -1,21 +1,9 @@
 const moment = require('moment');
 const { StateEnum } = require('./util/StateEnum');
 const { expectThrow } = require('./util/expectThrow');
+const { convertProduct, convertEscrow } = require('./util/structs');
 
 const Market = artifacts.require('Market');
-
-// Product struct for clarity:
-// struct Product {
-//   string name;
-//   uint256 price;
-//   uint256 id;
-//   uint256 guaranteedShippingTime;
-//   uint256 dateOfPurchase;
-//   uint256 dateOfShipping;
-//   State state;
-//   address vendor;
-//   address customer;
-// }
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -44,18 +32,19 @@ contract('Market', function (accounts) {
   
       await market.createProductListing(name, price, guaranteedShippingTime, { from: vendor });
       const numOfProducts = await market.numOfProducts();
-      const product = await market.products(id);
+      const product = convertProduct(await market.products(id));
    
       assert.equal(numOfProducts, 1);
-      assert.equal(product[0], name); // assert name
-      assert.equal(product[1].toNumber(), price); // assert price
-      assert.equal(product[2].toNumber(), id); // assert id
-      assert.equal(product[3].toNumber(), guaranteedShippingTime); // assert shipping time
-      assert.equal(product[4].toNumber(), 0); // assert date of purchase is still zero
-      assert.equal(product[5].toNumber(), 0); // assert date of shipping is still zero
-      assert.equal(product[6].toNumber(), StateEnum.New); // assert state
-      assert.equal(product[7], vendor); // assert vendor address
-      assert.equal(product[8], ZERO_ADDRESS); // assert customer address is still address(0)
+    
+      assert.equal(product.name, name);
+      assert.equal(product.price, price);
+      assert.equal(product.id, id);
+      assert.equal(product.guaranteedShippingTime, guaranteedShippingTime);
+      assert.equal(product.dateOfPurchase, 0);
+      assert.equal(product.dateOfShipping, 0);
+      assert.equal(product.state, StateEnum.New);
+      assert.equal(product.vendor, vendor);
+      assert.equal(product.customer, ZERO_ADDRESS);
     });
   });
   
@@ -70,15 +59,15 @@ contract('Market', function (accounts) {
       const { id, price } = testProduct;
 
       await market.purchaseProduct(id, { from: customer, value: price });
-      const product = await market.products(id);
-      const escrow = await market.escrows(id);
+      const product = convertProduct(await market.products(id));
+      const escrow = convertEscrow(await market.escrows(id));
 
-      assert.notEqual(product[4].toNumber(), 0); // assert date of purchase has been changed
-      assert.equal(product[6].toNumber(), StateEnum.Purchased); // assert state
-      assert.equal(product[8], customer); // assert customer address
+      assert.notEqual(product.dateOfPurchase, 0); // assert date of purchase has been changed
+      assert.equal(product.state, StateEnum.Purchased);
+      assert.equal(product.customer, customer);
 
-      assert.equal(escrow[0].toNumber(), price); // assert held amount
-      assert.equal(escrow[1].toNumber(), 0); // assert expiration date is still zero
+      assert.equal(escrow.amountHeld, price); // assert held amount
+      assert.equal(escrow.expirationDate, 0); // assert expiration date is still zero
     });
 
     it('should fail with insufficient funds', async function () {
@@ -111,13 +100,13 @@ contract('Market', function (accounts) {
       const { id } = testProduct;
 
       await market.shipProduct(id, { from: vendor });
-      const product = await market.products(id);
-      const escrow = await market.escrows(id);
+      const product = convertProduct(await market.products(id));
+      const escrow = convertEscrow(await market.escrows(id));
 
-      assert.notEqual(product[5].toNumber(), 0); // assert date of shipping has been changed
-      assert.equal(product[6].toNumber(), StateEnum.Shipped); // assert state
+      assert.notEqual(product.dateOfShipping, 0); // assert date of shipping has been changed
+      assert.equal(product.state, StateEnum.Shipped);
 
-      assert.notEqual(escrow[1].toNumber(), 0); // assert expiration date has been changed
+      assert.notEqual(escrow.expirationDate, 0); // assert expiration date has been changed
     });
 
     it('should only allow the vendor to ship the product', async function () {
@@ -142,9 +131,9 @@ contract('Market', function (accounts) {
       const { id } = testProduct;
 
       await market.receiveProduct(id, { from: customer });
-      const product = await market.products(id);
+      const product = convertProduct(await market.products(id));
 
-      assert.equal(product[6].toNumber(), StateEnum.Received); // assert state
+      assert.equal(product.state, StateEnum.Received);
     });
 
     it('should only allow the customer to receive the product', async function () {
@@ -177,9 +166,9 @@ contract('Market', function (accounts) {
       await market.setEscrowExpirationDateForTest(id, newExpirationDate);
 
       await market.flagProduct(id, { from: customer });
-      const product = await market.products(id);
+      const product = convertProduct(await market.products(id));
 
-      assert.equal(product[6].toNumber(), StateEnum.Flagged); // assert state
+      assert.equal(product.state, StateEnum.Flagged); // assert state
     });
 
     it('should only allow the customer to flag the product', async function () {
@@ -241,9 +230,9 @@ contract('Market', function (accounts) {
       const balanceBefore = await web3.eth.getBalance(vendor);
       await market.resolveDispute(id, vendor);
       const balanceAfter = await web3.eth.getBalance(vendor);
-      const product = await market.products(id);
+      const product = convertProduct(await market.products(id));
 
-      assert.equal(product[6].toNumber(), StateEnum.Resolved); // assert state
+      assert.equal(product.state, StateEnum.Resolved); // assert state
       assert.deepEqual(balanceBefore.add(price), balanceAfter); // assert balance
     });
 
@@ -253,9 +242,9 @@ contract('Market', function (accounts) {
       const balanceBefore = await web3.eth.getBalance(customer);
       await market.resolveDispute(id, customer);
       const balanceAfter = await web3.eth.getBalance(customer);
-      const product = await market.products(id);
+      const product = convertProduct(await market.products(id));
 
-      assert.equal(product[6].toNumber(), StateEnum.Resolved); // assert state
+      assert.equal(product.state, StateEnum.Resolved); // assert state
       assert.deepEqual(balanceBefore.add(price), balanceAfter); // assert balance
     });
 
