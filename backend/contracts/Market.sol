@@ -116,14 +116,14 @@ contract Market is EscrowFactory {
       "You can't flag this product yet!"
     );
     require(
-      escrows[id].expirationDate > now,
+      now < escrows[id].expirationDate,
       "You can't flag this product anymore!"
     );
 
     Product storage product = products[id];
     product.state = State.Flagged;
 
-    emit LogProductFlagged(id, msg.sender, product.customer);
+    emit LogProductFlagged(id, product.vendor, product.customer);
   }
 
   /**
@@ -137,11 +137,11 @@ contract Market is EscrowFactory {
       inFavor == products[id].vendor || inFavor == products[id].customer,
       "You can only resolve the dispute in favor of the vendor or the customer!"
     );
+    
+    withdrawTo(id, inFavor);
 
     Product storage product = products[id];
     product.state = State.Resolved;
-    
-    withdrawTo(id, inFavor);
 
     emit LogProductDisputeResolved(id, inFavor);
   }
