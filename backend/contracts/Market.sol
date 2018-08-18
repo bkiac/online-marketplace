@@ -1,14 +1,14 @@
 pragma solidity ^0.4.24;
 
-import "./EscrowFactory.sol";
+import "./Testable.sol";
 
 
 /**
  * @title Market
  * @author Bence Knáb
- * @notice This contract is responsible for product management.
+ * @notice This is the main contract which is responsible for product management.
  */
-contract Market is EscrowFactory {
+contract Market is Testable {
 
   event LogProductListed(uint256 id, address vendor);
   event LogProductPurchased(uint256 id, address vendor, address customer);

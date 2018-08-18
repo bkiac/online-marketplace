@@ -16,7 +16,6 @@ contract EscrowFactory is MarketHelper {
   }
 
 
-  uint256 numOfEscrows; // TODO: remove
   mapping(uint256 => Escrow) public escrows;
 
 
@@ -24,18 +23,6 @@ contract EscrowFactory is MarketHelper {
   event LogEscrowExpirationDateSetForProduct(uint256 productId);
   event LogEscrowWithdrawnForProduct(uint256 productId, address to);
 
-
-  /**
-   * @dev This function can only be called by the contract owner in development mode.
-   * Allows to manually set expiration dates to test time dependent methods.
-   */
-  function setEscrowExpirationDateForTest(uint256 productId, uint256 date) 
-    external
-    onlyOwner
-    onlyDevelopmentMode
-  {
-    escrows[productId].expirationDate = date;
-  }
 
   /**
    * @notice Customer can withdraw their funds from the escrow if the vendor doesn't ship the 

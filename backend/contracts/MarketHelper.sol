@@ -1,15 +1,15 @@
 pragma solidity ^0.4.24;
 
+import "openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
-import "./Testable.sol";
 
 /**
  * @title MarketHelper
  * @author Bence Knáb
- * @notice This is a wrapper contract for the application, to store product data and modifiers
- * concerning this data.
+ * @notice This is a wrapper contract for the application, to store product data and common
+ * modifiers.
  */
-contract MarketHelper is Testable {
+contract MarketHelper is Pausable {
 
   using SafeMath for uint256;
 
@@ -37,6 +37,8 @@ contract MarketHelper is Testable {
   }
 
 
+  uint256 public conflictPeriod = 3 minutes;
+  
   uint256 public numOfProducts;
   mapping(uint256 => Product) public products;
 
