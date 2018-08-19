@@ -46,6 +46,8 @@ The disputes are resolved by the contract owner by refunding either the vendor o
     - flagging a product is available for 3 days after the guaranteed shipping date
 
 - Contract owner can
+  - toggle development mode
+  - toggle emergency stop
   - resolve disputes in favor of either the vendor or the customer
 
 ## Getting started
