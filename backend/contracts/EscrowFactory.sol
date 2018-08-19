@@ -88,11 +88,14 @@ contract EscrowFactory is MarketHelper {
   function withdrawTo(uint256 productId, address to) 
     internal
     onlyOwner
-    onlyFlaggedProduct(productId)
   {
     require(
       to == products[productId].vendor || to == products[productId].customer,
       "You can only withdraw to the product customer or vendor!"
+    );
+    require(
+      escrows[productId].amountHeld != 0, 
+      "The funds from this escrow has already been withdrawn!"
     );
     
     Escrow storage escrow = escrows[productId];

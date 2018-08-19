@@ -138,10 +138,10 @@ contract Market is Testable {
       "You can only resolve the dispute in favor of the vendor or the customer!"
     );
     
-    withdrawTo(id, inFavor);
-
     Product storage product = products[id];
     product.state = State.Resolved;
+
+    withdrawTo(id, inFavor);
 
     emit LogProductDisputeResolved(id, inFavor);
   }
