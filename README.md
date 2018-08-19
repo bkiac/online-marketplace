@@ -85,7 +85,7 @@ You are ready to interact with the application!
 
 ## Tests
 
-You can test the smart contracts with a running ```ganache-cli``` blockchain.
+You can test the smart contracts with a running ```ganache-cli``` blockchain using Truffle tests.
 
 ```sh
 cd backend
