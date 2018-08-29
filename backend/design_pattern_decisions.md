@@ -4,6 +4,7 @@
 
 Pausable contract is used to implement Emergency Stop design pattern and to enable
 admin features through the Ownable contract.
+Emergency Stop can be initiated by the contract owner to pause deposits and withdrawals.
 
 ### Ownable
 
