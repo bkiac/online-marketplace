@@ -96,6 +96,14 @@ truffle test
 
 There are no tests for the React app.
 
+## Design Patterns
+
+See [design_pattern_decisions.md](/backend/design_pattern_decisions.md)
+
+## Avoiding Common Attacks
+
+See [avoiding_common_attacks.md](/backend/avoiding_common_attacks.md)
+
 ## Room for improvement
 
 - Solidity
