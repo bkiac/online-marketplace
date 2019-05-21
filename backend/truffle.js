@@ -13,19 +13,23 @@
  */
 
 module.exports = {
-  migrations_directory: './migrations',
+  compilers: {
+    solc: {
+      version: "0.5.8",
+      settings: {
+        optimizer: {
+          enabled: true,
+          runs: 500
+        }
+      }
+    }
+  },
+  migrations_directory: "./migrations",
   networks: {
     development: {
-      host: 'localhost',
+      host: "localhost",
       port: 8545,
-      network_id: '*', // Match any network id
-    },
-  },
-  solc: {
-    optimizer: {
-      enabled: true,
-      runs: 500,
-    },
-  },
+      network_id: "*" // Match any network id
+    }
+  }
 };
-

@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.8;
 
 import "./Testable.sol";
 
@@ -37,7 +37,7 @@ contract Market is Testable {
    * @param price The price of the product in wei
    * @param guaranteedShippingTime The guaranteed shipping time of the product in seconds
    */
-  function createProductListing(string name, uint256 price, uint256 guaranteedShippingTime) 
+  function createProductListing(string calldata name, uint256 price, uint256 guaranteedShippingTime) 
     external
   {
     require(bytes(name).length < 80, "This product name is too long!");
@@ -52,7 +52,7 @@ contract Market is Testable {
       0,
       State.New,
       msg.sender,
-      0
+      address(0)
     );
 
     numOfProducts = numOfProducts.add(1);
@@ -132,7 +132,7 @@ contract Market is Testable {
    * @param id Product ID
    * @param inFavor The address of the product's vendor or customer
    */
-  function resolveDispute(uint256 id, address inFavor) external onlyOwner onlyFlaggedProduct(id) {
+  function resolveDispute(uint256 id, address payable inFavor) external onlyOwner onlyFlaggedProduct(id) {
     require(
       inFavor == products[id].vendor || inFavor == products[id].customer,
       "You can only resolve the dispute in favor of the vendor or the customer!"

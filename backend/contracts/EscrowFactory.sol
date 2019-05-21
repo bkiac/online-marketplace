@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.8;
 
 import "./MarketHelper.sol";
 
@@ -85,7 +85,7 @@ contract EscrowFactory is MarketHelper {
    * @param productId Product ID
    * @param to Address to transfer the funds
    */
-  function withdrawTo(uint256 productId, address to) 
+  function withdrawTo(uint256 productId, address payable to) 
     internal
     onlyOwner
   {

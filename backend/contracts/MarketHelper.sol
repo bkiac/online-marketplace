@@ -1,7 +1,8 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.8;
 
-import "openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
+import "../node_modules/openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
+import "../node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol";
+import "../node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 /**
  * @title MarketHelper
@@ -9,7 +10,7 @@ import "openzeppelin-solidity/contracts/math/SafeMath.sol";
  * @notice This is a wrapper contract for the application, to store product data and common
  * modifiers.
  */
-contract MarketHelper is Pausable {
+contract MarketHelper is Pausable, Ownable {
 
   using SafeMath for uint256;
 
@@ -32,8 +33,8 @@ contract MarketHelper is Pausable {
     uint256 dateOfPurchase;
     uint256 dateOfShipping;
     State state;
-    address vendor;
-    address customer;
+    address payable vendor;
+    address payable customer;
   }
 
 
